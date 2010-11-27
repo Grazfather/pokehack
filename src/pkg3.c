@@ -4,32 +4,34 @@
  */
 
 #include <stdio.h>
-#include "pokestructs.h"
+#include <pokestructs.h>
 
 #define STATE_SIZE 0xB49FE
 
 // Either compile for each game, allow a choice, or detect automatically
 #define BELT_OFFSET 0x2C863 // Uncompressed save state for Pokemon FireRed
 
-#define NUM_POKEMON 6 // This will never change, but whater.
+#define NUM_POKEMON 6 // This will never change, but whatever.
 #define DATA_LENGTH 48
 
-#define DEBUG
+pokemon_t * pokemon[6];
+pokemon_attacks_t * pokemon_attacks[6];
+pokemon_effort_t * pokemon_effort[6];
+pokemon_growth_t * pokemon_growth[6];
+pokemon_misc_t * pokemon_misc[6];
 
-/* Order:
-	00. GAEM	 06. AGEM	 12. EGAM	 18. MGAE
-	01. GAME	 07. AGME	 13. EGMA	 19. MGEA
-	02. GEAM	 08. AEGM	 14. EAGM	 20. MAGE
-	03. GEMA	 09. AEMG	 15. EAMG	 21. MAEG
-	04. GMAE	 10. AMGE	 16. EMGA	 22. MEGA
-	05. GMEA	 11. AMEG	 17. EMAG	 23. MEAG
-*/
+void dumpbuf(unsigned char * buf, unsigned int size)
+{
+	for (; size > 0; size--)
+	{
+		printf("%2.2X ", *buf++);
+	}
+	printf("\n");
+}
 
-struct pokemon_t * pokemon[6];
-
-unsigned short int encrypt(char *data, unsigned int pv, unsigned int otid) {
+unsigned short int encrypt(unsigned char *data, unsigned int pv, unsigned int otid) {
 	unsigned int xorkey = pv ^ otid;
-	unsigned int checksum = 0;
+	unsigned short int checksum = 0;
 	unsigned char i;
 	
 	for (i = 0; i < DATA_LENGTH; i+=4)
@@ -37,15 +39,13 @@ unsigned short int encrypt(char *data, unsigned int pv, unsigned int otid) {
 		checksum += data[i+1]<<8 | data[i];
 		checksum += data[i+3]<<8 | data[i+2];
 		
-		data[i] ^= (xorkey >> 24)&0xFF;
-		data[i+1] ^= (xorkey >> 16)&0xFF;
-		data[i+2] ^= (xorkey >> 8)&0xFF;
-		data[i+3] ^= (xorkey >> 0)&0xFF;
-		
+		data[i] ^= (xorkey >> 0)&0xFF;
+		data[i+1] ^= (xorkey >> 8)&0xFF;
+		data[i+2] ^= (xorkey >> 16)&0xFF;
+		data[i+3] ^= (xorkey >> 24)&0xFF;
 	}
 	
-	
-	return (unsigned short int)(checksum & 0xFFFF);
+	return checksum;
 
 }
 
@@ -56,8 +56,8 @@ int main(int argc, char *argv[]) {
     
     /* check for the SRAM argument */
     if (argc != 2) {
-        fprintf(stderr, "syntax: stateedit pokemonsavestate\n");
-        fprintf(stderr, "example: stateedit PokemonFireRed1\n");
+        fprintf(stderr, "syntax: stateedit pokemonsavestate outfile\n");
+        fprintf(stderr, "example: stateedit PokemonFireRed1 NewFireRed\n");
         
         return -1;
     }
@@ -81,30 +81,37 @@ int main(int argc, char *argv[]) {
     
 	for(i = 0; i < NUM_POKEMON; i++)
 	{
+		int o;
+		
         // Read data on pokemon
-        pokemon[i] = /*(*(struct pokemon_t))*/(ram + BELT_OFFSET + (i * sizeof(struct pokemon_t)));
+        pokemon[i] = (pokemon_t *)(ram + BELT_OFFSET + (i * sizeof(pokemon_t)));
         
-		//printf("Got pokemon %d\n",i);
-		//printf("Personality: 0x%X\n", pokemon[i]->personality);
-        
+		if (i < 1) {
+        printf("Pokemon %d before:\ndata value: 0x%X checksum: 0x%X pv:0x%8.8X otid:0x%8.8X\n", i, pokemon[i]->data[5], pokemon[i]->checksum, pokemon[i]->personality, pokemon[i]->otid);
+		dumpbuf(pokemon[i]->data, 48);
+		}
 		// Unencrypt pokemon's data
         encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
-
+		
+		// Figure out the order
+		o = pokemon[i]->personality % 24; // TODO: See if we need to switch the order for endianness
+		pokemon_attacks[i] = (pokemon_attacks_t *)(pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
+		pokemon_effort[i] = (pokemon_effort_t *)(pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
+		pokemon_growth[i] = (pokemon_growth_t *)(pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
+		pokemon_misc[i] = (pokemon_misc_t *)(pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
     }
 	
-	/**
-	 * Modifiy pokemon data here
-	 * 1. Figure out the order (AEGM)
-	 * 2. Modify what we need
-	 * 3. Re-encrypt
-	 * 4. Set new checksum
-	 */
-	 //printf("pk0 hp %d\n", pokemon[0]->currentHP);
-	 //printf("pk5 hp %d\n", pokemon[5]->currentHP);
-	 pokemon[0]->currentHP = 13;
+	// Modify whatever we want
+	pokemon_growth[0]->species = pokemon_growth[0]->species + 1;
+	
+	// Re encrypt and set checksum
+	for(i = 0; i < NUM_POKEMON; i++)
+	{
+		pokemon[i]->checksum = encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
+	}
 
-    
-    // re-write 
+    // re-write
+	// TODO: Make it write to a different file instead of overwriting the input
     if ((f = fopen(argv[1], "wb")) == NULL) {
         fprintf(stderr, "error: unable to open %s for writing.\n", argv[1]);
         
