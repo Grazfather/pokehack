@@ -1,16 +1,23 @@
-TARGER = pokehack.exe
-CXXFILES = pkg3.c
-OBJECTS = pkg3.o
+TARGET = pokehack.exe
+SRCS = pkg3.c
+OBJECTS = $(SRCS:.c=.o)
 
-INCDIRS = -I../include
-SRCDIR = ./src/
+SRCDIR = src/
+
+INCDIRS = -I./include/
 
 CXXFLAGS = -g $(INCDIRS) -Wall
-$(TARGET): $(OBJECTS) Makefile
-	gcc $(CXXFLAGS) $(OBJECTS) -o $(EXEFILE)
-	
-pkg3.o:
-	gcc $(CXXFLAGS) -c $(SRCDIR)pkg3.c
+CXX = gcc
+
+.PHONY: all clean
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(OBJECTS) -o $(TARGET)
+
+$(OBJECTS): $(SRCDIR)$(SRCS)
+	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
