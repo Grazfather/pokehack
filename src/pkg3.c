@@ -1,5 +1,5 @@
 /*
- * Pk Gen 3 Save-state
+ * Pokemon Gen 3 Save-state editor
  * Copyright (C) 2010 Grazfather
  */
 
@@ -14,12 +14,14 @@
 #define NUM_POKEMON 6 // This will never change, but whatever.
 #define DATA_LENGTH 48
 
+// Global variables
 pokemon_t * pokemon[6];
 pokemon_attacks_t * pokemon_attacks[6];
 pokemon_effort_t * pokemon_effort[6];
 pokemon_growth_t * pokemon_growth[6];
 pokemon_misc_t * pokemon_misc[6];
 
+// Simply print out a buffer in hex. Used for debugging
 void dumpbuf(unsigned char * buf, unsigned int size)
 {
 	for (; size > 0; size--)
@@ -29,6 +31,9 @@ void dumpbuf(unsigned char * buf, unsigned int size)
 	printf("\n");
 }
 
+/*
+ *	Encrypts/decrypts the 48 byte data buffer based on the xored pv and otid values
+ */
 unsigned short int encrypt(unsigned char *data, unsigned int pv, unsigned int otid) {
 	unsigned int xorkey = pv ^ otid;
 	unsigned short int checksum = 0;
@@ -54,7 +59,7 @@ int main(int argc, char *argv[]) {
     char ram[STATE_SIZE];
 	int i;
     
-    /* check for the SRAM argument */
+    // Check for the save state file argument
     if (argc != 2) {
         fprintf(stderr, "syntax: stateedit pokemonsavestate outfile\n");
         fprintf(stderr, "example: stateedit PokemonFireRed1 NewFireRed\n");
@@ -62,14 +67,14 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     
-    /* make sure we can open the file for reading */
+    // Make sure we can open the file for reading
     if ((f = fopen(argv[1], "rb")) == NULL) {
         fprintf(stderr, "error: unable to open %s for reading.\n", argv[1]);
         
         return -1;
     }
     
-    /* make sure we were able to read a full SRAM file */
+    // Make sure we were able to read a full SRAM file
     if (fread(ram, STATE_SIZE, 1, f) != 1) {
         fprintf(stderr, "error: unable to read SRAM file data.\n");
         fclose(f);
@@ -86,10 +91,6 @@ int main(int argc, char *argv[]) {
         // Read data on pokemon
         pokemon[i] = (pokemon_t *)(ram + BELT_OFFSET + (i * sizeof(pokemon_t)));
         
-		if (i < 1) {
-        printf("Pokemon %d before:\ndata value: 0x%X checksum: 0x%X pv:0x%8.8X otid:0x%8.8X\n", i, pokemon[i]->data[5], pokemon[i]->checksum, pokemon[i]->personality, pokemon[i]->otid);
-		dumpbuf(pokemon[i]->data, 48);
-		}
 		// Unencrypt pokemon's data
         encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
 		
@@ -110,8 +111,8 @@ int main(int argc, char *argv[]) {
 		pokemon[i]->checksum = encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
 	}
 
-    // re-write
-	// TODO: Make it write to a different file instead of overwriting the input
+    // re-write to file
+	// TODO: Make it write to a different file instead of overwriting the input file
     if ((f = fopen(argv[1], "wb")) == NULL) {
         fprintf(stderr, "error: unable to open %s for writing.\n", argv[1]);
         
