@@ -2,7 +2,7 @@
 #define WINDOW_H
 
 #define WIN_W 400
-#define WIN_H 400
+#define WIN_H 300
 
 // Include all the headers for the Qt widgets you will be using
 #include <QMenu>
@@ -16,6 +16,8 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QFileDialog>
+
+#include <QDebug>
 
 class Window : public QWidget
 {
@@ -37,6 +39,9 @@ class Window : public QWidget
     private:
         // Declare all widgets that will need to be accessed outside of the
         // constructor (for example, if you need to get the value of a slider)
+		QLineEdit *pokeExperienceEdit;
+		QLineEdit *pokeLevelEdit;
+		QLineEdit *pokePersonalityEdit;
 };
 
 #endif

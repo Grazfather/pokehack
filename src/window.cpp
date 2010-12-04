@@ -1,4 +1,5 @@
 #include "window.h"
+#include "SaveParser.h"
 #include <iostream>
 
 using namespace std;
@@ -11,7 +12,16 @@ void Window::loadSave()
                     this,
                     "load savestate",
                     "Choose a savestate" );*/
-	// Parser->parseSave(fileName);
+	// SaveParser::Instance()->load(fileName);
+		char *s;
+		qDebug() << "Test: " << s << endl;
+		itoa(SaveParser::Instance()->pokemon_growth[0]->xp, s, 10);
+		pokeExperienceEdit->setText(s);
+		itoa(SaveParser::Instance()->pokemon[0]->level, s, 10);
+		pokeLevelEdit->setText(s);
+		itoa(SaveParser::Instance()->pokemon[0]->personality, s, 10);
+		pokePersonalityEdit->setText(s);
+	
 }
 
 void Window::save()
@@ -26,6 +36,7 @@ void Window::saveAs()
 
 void Window::quit()
 {
+	qDebug() << "TEst\n";
 	exit(0);
 }
 
@@ -66,13 +77,12 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topLeftLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
 	
 	 // Centre
-
-	QComboBox* pokeSpeciesnEdit = new QComboBox();
+	QComboBox* pokeStatusEdit = new QComboBox();
 	QComboBox* pokeMarkEdit = new QComboBox();
 	QComboBox* pokePokeballEdit = new QComboBox();
 	QComboBox* pokeLocationEdit = new QComboBox();
 
-	topCentreLayout->addRow(tr("&Species:"), pokeSpeciesnEdit);
+	topCentreLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
 	topCentreLayout->addRow(tr("&Mark:"), pokeMarkEdit);
 	topCentreLayout->addRow(tr("&Pokeball:"), pokePokeballEdit);
 	topCentreLayout->addRow(tr("&Location:"), pokeLocationEdit);
@@ -91,6 +101,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topRightLayout->addRow(tr("&Species:"), pokeSpeciesEdit);
 	
 	// Pokemon Attacks
+	QLabel* pokeAttacksTitle = new QLabel(tr("Attacks"));
 	QGridLayout* pokeAttackLayout = new QGridLayout();
 	QComboBox* pokeAtk1 = new QComboBox();
 	QSpinBox* pokePP1 = new QSpinBox();
@@ -105,18 +116,20 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	QSpinBox* pokePP4 = new QSpinBox();
 	pokePP4->setRange(0, 56);
 	
-	pokeAttackLayout->addWidget(pokeAtk1, 0, 0);
-	pokeAttackLayout->addWidget(pokePP1, 0, 1);
-	pokeAttackLayout->addWidget(pokeAtk2, 0, 2);
-	pokeAttackLayout->addWidget(pokePP2, 0, 3);
-	pokeAttackLayout->addWidget(pokeAtk3, 1, 0);
-	pokeAttackLayout->addWidget(pokePP3, 1, 1);
-	pokeAttackLayout->addWidget(pokeAtk4, 1, 2);
-	pokeAttackLayout->addWidget(pokePP4, 1, 3);	
+	pokeAttackLayout->addWidget(pokeAttacksTitle, 0, 0);
+	pokeAttackLayout->addWidget(pokeAtk1, 1, 0);
+	pokeAttackLayout->addWidget(pokePP1, 1, 1);
+	pokeAttackLayout->addWidget(pokeAtk2, 1, 2);
+	pokeAttackLayout->addWidget(pokePP2, 1, 3);
+	pokeAttackLayout->addWidget(pokeAtk3, 2, 0);
+	pokeAttackLayout->addWidget(pokePP3, 2, 1);
+	pokeAttackLayout->addWidget(pokeAtk4, 2, 2);
+	pokeAttackLayout->addWidget(pokePP4, 2, 3);	
 	
 	bottomLayout->addLayout(pokeAttackLayout);
 	
 	// Pokemon EVs
+	QLabel* pokeEVsTitle = new QLabel(tr("EVs"));
 	QFormLayout* pokeEVsLayout = new QFormLayout();
 	QSpinBox* pokeHPEV = new QSpinBox();
 	pokeHPEV->setRange(0, 255);
@@ -130,8 +143,9 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeSpAtkEV->setRange(0, 255);
 	QSpinBox* pokeSpDefEV = new QSpinBox();
 	pokeSpDefEV->setRange(0, 255);
-	QLabel* pokeTotalEVs = new QLabel(tr("Total Evs: "));
+	QLabel* pokeTotalEVs = new QLabel(tr("Total EVs: "));
 	
+	pokeEVsLayout->addWidget(pokeEVsTitle);
 	pokeEVsLayout->addRow(tr("HP:"), pokeHPEV);
 	pokeEVsLayout->addRow(tr("Atk:"), pokeAtkEV);
 	pokeEVsLayout->addRow(tr("Def:"), pokeDefEV);
@@ -141,6 +155,34 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeEVsLayout->addWidget(pokeTotalEVs);
 	
 	bottomLayout->addLayout(pokeEVsLayout);
+	
+	// Pokemon IVs
+	QLabel* pokeIVsTitle = new QLabel(tr("IVs"));
+	QFormLayout* pokeIVsLayout = new QFormLayout();
+	QSpinBox* pokeHPIV = new QSpinBox();
+	pokeHPIV->setRange(0, 31);
+	QSpinBox* pokeAtkIV = new QSpinBox();
+	pokeAtkIV->setRange(0, 31);
+	QSpinBox* pokeDefIV = new QSpinBox();
+	pokeDefIV->setRange(0, 31);
+	QSpinBox* pokeSpdIV = new QSpinBox();
+	pokeSpdIV->setRange(0, 31);
+	QSpinBox* pokeSpAtkIV = new QSpinBox();
+	pokeSpAtkIV->setRange(0, 31);
+	QSpinBox* pokeSpDefIV = new QSpinBox();
+	pokeSpDefIV->setRange(0, 31);
+	QLabel* pokeTotalIVs = new QLabel(tr("Total IVs: "));
+	
+	pokeIVsLayout->addWidget(pokeIVsTitle);
+	pokeIVsLayout->addRow(tr("HP:"), pokeHPIV);
+	pokeIVsLayout->addRow(tr("Atk:"), pokeAtkIV);
+	pokeIVsLayout->addRow(tr("Def:"), pokeDefIV);
+	pokeIVsLayout->addRow(tr("Spd:"), pokeSpdIV);
+	pokeIVsLayout->addRow(tr("SpAtk:"), pokeSpAtkIV);
+	pokeIVsLayout->addRow(tr("SpDef:"), pokeSpDefIV);
+	pokeIVsLayout->addWidget(pokeTotalIVs);
+	
+	bottomLayout->addLayout(pokeIVsLayout);
 	
 	// Pokemon Growth
 	QGridLayout* pokeGrowthLayout = new QGridLayout();
