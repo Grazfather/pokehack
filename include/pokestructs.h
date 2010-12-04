@@ -1,3 +1,13 @@
+#include <stdio.h>
+
+#define STATE_SIZE 0xB49FE
+
+// Either compile for each game, allow a choice, or detect automatically
+#define BELT_OFFSET 0x2C863 // Uncompressed save state for Pokemon FireRed
+
+#define NUM_POKEMON 6 // This will never change, but whatever.
+#define DATA_LENGTH 48
+
 typedef struct {
 	unsigned int personality;
 	unsigned int otid;
@@ -76,7 +86,7 @@ typedef struct {
 */
 
 // Where in data each struct is, based on AEGM order
-static const int DataOrderTable[24][3] = { \
+static const int DataOrderTable[24][4] = { \
 /*          A  E  G  M */ \
 /* GAEM */ {1, 2, 0, 3}, \
 /* GAME */ {1, 3, 0, 2}, \

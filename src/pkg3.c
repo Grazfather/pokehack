@@ -2,27 +2,18 @@
  * Pokemon Gen 3 Save-state editor
  * Copyright (C) 2010 Grazfather
  */
-
-#include <stdio.h>
 #include <pokestructs.h>
-
-#define STATE_SIZE 0xB49FE
-
-// Either compile for each game, allow a choice, or detect automatically
-#define BELT_OFFSET 0x2C863 // Uncompressed save state for Pokemon FireRed
-
-#define NUM_POKEMON 6 // This will never change, but whatever.
-#define DATA_LENGTH 48
-
+ 
+ 
 // Global variables
-pokemon_t * pokemon[6];
-pokemon_attacks_t * pokemon_attacks[6];
-pokemon_effort_t * pokemon_effort[6];
-pokemon_growth_t * pokemon_growth[6];
-pokemon_misc_t * pokemon_misc[6];
+pokemon_t *pokemon[NUM_POKEMON];
+pokemon_attacks_t *pokemon_attacks[NUM_POKEMON];
+pokemon_effort_t *pokemon_effort[NUM_POKEMON];
+pokemon_growth_t *pokemon_growth[NUM_POKEMON];
+pokemon_misc_t *pokemon_misc[NUM_POKEMON];
 
 // Simply print out a buffer in hex. Used for debugging
-void dumpbuf(unsigned char * buf, unsigned int size)
+void dumpbuf(unsigned char *buf, unsigned int size)
 {
 	for (; size > 0; size--)
 	{
@@ -95,7 +86,7 @@ int main(int argc, char *argv[]) {
         encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
 		
 		// Figure out the order
-		o = pokemon[i]->personality % 24; // TODO: See if we need to switch the order for endianness
+		o = pokemon[i]->personality % 24;
 		pokemon_attacks[i] = (pokemon_attacks_t *)(pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
 		pokemon_effort[i] = (pokemon_effort_t *)(pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
 		pokemon_growth[i] = (pokemon_growth_t *)(pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
@@ -103,8 +94,12 @@ int main(int argc, char *argv[]) {
     }
 	
 	// Modify whatever we want
-	pokemon_growth[0]->species = pokemon_growth[0]->species + 1;
-	
+	pokemon_growth[0]->held = 133;
+	pokemon_growth[1]->held = 134;
+	pokemon_growth[2]->held = 135;
+	pokemon_growth[3]->held = 136;
+	pokemon_growth[4]->held = 137;
+	pokemon_growth[5]->held = 138;
 	// Re encrypt and set checksum
 	for(i = 0; i < NUM_POKEMON; i++)
 	{
