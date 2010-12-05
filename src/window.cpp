@@ -13,15 +13,44 @@ void Window::loadSave()
                     "load savestate",
                     "Choose a savestate" );*/
 	// SaveParser::Instance()->load(fileName);
-		char *s;
-		qDebug() << "Test: " << s << endl;
-		itoa(SaveParser::Instance()->pokemon_growth[0]->xp, s, 10);
-		pokeExperienceEdit->setText(s);
-		itoa(SaveParser::Instance()->pokemon[0]->level, s, 10);
-		pokeLevelEdit->setText(s);
-		itoa(SaveParser::Instance()->pokemon[0]->personality, s, 10);
-		pokePersonalityEdit->setText(s);
-	
+		
+		pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
+		// QLineEdit *pokeNameEdit;
+		pokeTrainerIDEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->otid, 16).toUpper());
+		// QLineEdit *pokeTrainerNameEdit;
+		
+		// QComboBox *pokeStatusEdit;
+		// QComboBox *pokeMarkEdit;
+		// QComboBox *pokePokeballEdit;
+		// QComboBox *pokeLocationEdit;
+
+		// QComboBox *pokeHeldEdit;
+		pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
+		pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
+		// QComboBox *pokeSpeciesEdit;
+		
+		// QComboBox *pokeAtk1;
+		pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
+		// QComboBox *pokeAtk2;
+		pokePP2->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp2);
+		// QComboBox *pokeAtk3;
+		pokePP3->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp3);
+		// QComboBox *pokeAtk4;
+		pokePP4->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp4);
+		
+		// QSpinBox *pokeHPEV;
+		// QSpinBox *pokeAtkEV;
+		// QSpinBox *pokeDefEV;
+		// QSpinBox *pokeSpdEV;
+		// QSpinBox *pokeSpAtkEV;
+		// QSpinBox *pokeSpDefEV;
+		
+		// QSpinBox *pokeHPIV;
+		// QSpinBox *pokeAtkIV;
+		// QSpinBox *pokeDefIV;
+		// QSpinBox *pokeSpdIV;
+		// QSpinBox *pokeSpAtkIV;
+		// QSpinBox *pokeSpDefIV;
 }
 
 void Window::save()
@@ -36,7 +65,6 @@ void Window::saveAs()
 
 void Window::quit()
 {
-	qDebug() << "TEst\n";
 	exit(0);
 }
 
@@ -52,7 +80,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	 
     // Create menus
     QMenu* file = new QMenu("&File");
-    file->addAction( "Load savestate",  this, SLOT(loadModel()), Qt::CTRL+Qt::Key_L );
+    file->addAction( "Load savestate",  this, SLOT(loadSave()), Qt::CTRL+Qt::Key_L );
     file->addAction( "Save",  this, SLOT(save()), Qt::CTRL+Qt::Key_S );
 	file->addAction( "Save As...",  this, SLOT(saveAs()), Qt::CTRL+Qt::ALT+Qt::Key_S );
     file->addAction( "Exit",  this, SLOT(quit()), Qt::CTRL+Qt::Key_Q );
@@ -62,13 +90,13 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	
 	// Basic pokemon data
 	 // Left
-	QLineEdit* pokeNameEdit = new QLineEdit();
+	pokeNameEdit = new QLineEdit();
 	pokeNameEdit->setMaxLength(10);
-	QLineEdit* pokeTrainerIDEdit = new QLineEdit();
+	pokeTrainerIDEdit = new QLineEdit();
 	pokeTrainerIDEdit->setValidator(new QIntValidator(this));
-	QLineEdit* pokeTrainerNameEdit = new QLineEdit();
+	pokeTrainerNameEdit = new QLineEdit();
 	pokeTrainerNameEdit->setMaxLength(7);
-	QLineEdit* pokePersonalityEdit = new QLineEdit();
+	pokePersonalityEdit = new QLineEdit();
 	pokePersonalityEdit->setValidator(new QIntValidator(this));
 	
 	topLeftLayout->addRow(tr("&Nick Name:"), pokeNameEdit);
@@ -77,10 +105,10 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topLeftLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
 	
 	 // Centre
-	QComboBox* pokeStatusEdit = new QComboBox();
-	QComboBox* pokeMarkEdit = new QComboBox();
-	QComboBox* pokePokeballEdit = new QComboBox();
-	QComboBox* pokeLocationEdit = new QComboBox();
+	pokeStatusEdit = new QComboBox();
+	pokeMarkEdit = new QComboBox();
+	pokePokeballEdit = new QComboBox();
+	pokeLocationEdit = new QComboBox();
 
 	topCentreLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
 	topCentreLayout->addRow(tr("&Mark:"), pokeMarkEdit);
@@ -89,9 +117,9 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	
 	 // Right
 	QComboBox* pokeHeldEdit = new QComboBox();
-	QLineEdit* pokeExperienceEdit = new QLineEdit();
+	pokeExperienceEdit = new QLineEdit();
 	pokeExperienceEdit->setValidator(new QIntValidator(this));
-	QLineEdit* pokeLevelEdit = new QLineEdit();
+	pokeLevelEdit = new QLineEdit();
 	pokeLevelEdit->setValidator(new QIntValidator(this));
 	QComboBox* pokeSpeciesEdit = new QComboBox();
 
@@ -101,22 +129,21 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topRightLayout->addRow(tr("&Species:"), pokeSpeciesEdit);
 	
 	// Pokemon Attacks
-	QLabel* pokeAttacksTitle = new QLabel(tr("Attacks"));
-	QGridLayout* pokeAttackLayout = new QGridLayout();
-	QComboBox* pokeAtk1 = new QComboBox();
-	QSpinBox* pokePP1 = new QSpinBox();
+	QGridLayout *pokeAttackLayout = new QGridLayout();
+	pokeAtk1 = new QComboBox();
+	pokePP1 = new QSpinBox();
 	pokePP1->setRange(0, 56);
-	QComboBox* pokeAtk2 = new QComboBox();
-	QSpinBox* pokePP2 = new QSpinBox();
+	pokeAtk2 = new QComboBox();
+	pokePP2 = new QSpinBox();
 	pokePP2->setRange(0, 56);
-	QComboBox* pokeAtk3 = new QComboBox();
-	QSpinBox* pokePP3 = new QSpinBox();
+	pokeAtk3 = new QComboBox();
+	pokePP3 = new QSpinBox();
 	pokePP3->setRange(0, 56);
-	QComboBox* pokeAtk4 = new QComboBox();
-	QSpinBox* pokePP4 = new QSpinBox();
+	pokeAtk4 = new QComboBox();
+	pokePP4 = new QSpinBox();
 	pokePP4->setRange(0, 56);
 	
-	pokeAttackLayout->addWidget(pokeAttacksTitle, 0, 0);
+	pokeAttackLayout->addWidget(new QLabel(tr("Attacks")), 0, 0);
 	pokeAttackLayout->addWidget(pokeAtk1, 1, 0);
 	pokeAttackLayout->addWidget(pokePP1, 1, 1);
 	pokeAttackLayout->addWidget(pokeAtk2, 1, 2);
@@ -129,23 +156,22 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	bottomLayout->addLayout(pokeAttackLayout);
 	
 	// Pokemon EVs
-	QLabel* pokeEVsTitle = new QLabel(tr("EVs"));
-	QFormLayout* pokeEVsLayout = new QFormLayout();
-	QSpinBox* pokeHPEV = new QSpinBox();
+	QFormLayout *pokeEVsLayout = new QFormLayout();
+	pokeHPEV = new QSpinBox();
 	pokeHPEV->setRange(0, 255);
-	QSpinBox* pokeAtkEV = new QSpinBox();
+	pokeAtkEV = new QSpinBox();
 	pokeAtkEV->setRange(0, 255);
-	QSpinBox* pokeDefEV = new QSpinBox();
+	pokeDefEV = new QSpinBox();
 	pokeDefEV->setRange(0, 255);
-	QSpinBox* pokeSpdEV = new QSpinBox();
+	pokeSpdEV = new QSpinBox();
 	pokeSpdEV->setRange(0, 255);
-	QSpinBox* pokeSpAtkEV = new QSpinBox();
+	pokeSpAtkEV = new QSpinBox();
 	pokeSpAtkEV->setRange(0, 255);
-	QSpinBox* pokeSpDefEV = new QSpinBox();
+	pokeSpDefEV = new QSpinBox();
 	pokeSpDefEV->setRange(0, 255);
-	QLabel* pokeTotalEVs = new QLabel(tr("Total EVs: "));
+	QLabel *pokeTotalEVs = new QLabel(tr("Total EVs: "));
 	
-	pokeEVsLayout->addWidget(pokeEVsTitle);
+	pokeEVsLayout->addWidget(new QLabel(tr("EVs")));
 	pokeEVsLayout->addRow(tr("HP:"), pokeHPEV);
 	pokeEVsLayout->addRow(tr("Atk:"), pokeAtkEV);
 	pokeEVsLayout->addRow(tr("Def:"), pokeDefEV);
@@ -157,23 +183,22 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	bottomLayout->addLayout(pokeEVsLayout);
 	
 	// Pokemon IVs
-	QLabel* pokeIVsTitle = new QLabel(tr("IVs"));
 	QFormLayout* pokeIVsLayout = new QFormLayout();
-	QSpinBox* pokeHPIV = new QSpinBox();
+	pokeHPIV = new QSpinBox();
 	pokeHPIV->setRange(0, 31);
-	QSpinBox* pokeAtkIV = new QSpinBox();
+	pokeAtkIV = new QSpinBox();
 	pokeAtkIV->setRange(0, 31);
-	QSpinBox* pokeDefIV = new QSpinBox();
+	pokeDefIV = new QSpinBox();
 	pokeDefIV->setRange(0, 31);
-	QSpinBox* pokeSpdIV = new QSpinBox();
+	pokeSpdIV = new QSpinBox();
 	pokeSpdIV->setRange(0, 31);
-	QSpinBox* pokeSpAtkIV = new QSpinBox();
+	pokeSpAtkIV = new QSpinBox();
 	pokeSpAtkIV->setRange(0, 31);
-	QSpinBox* pokeSpDefIV = new QSpinBox();
+	pokeSpDefIV = new QSpinBox();
 	pokeSpDefIV->setRange(0, 31);
-	QLabel* pokeTotalIVs = new QLabel(tr("Total IVs: "));
+	QLabel *pokeTotalIVs = new QLabel(tr("Total IVs: "));
 	
-	pokeIVsLayout->addWidget(pokeIVsTitle);
+	pokeIVsLayout->addWidget(new QLabel(tr("IVs")));
 	pokeIVsLayout->addRow(tr("HP:"), pokeHPIV);
 	pokeIVsLayout->addRow(tr("Atk:"), pokeAtkIV);
 	pokeIVsLayout->addRow(tr("Def:"), pokeDefIV);
@@ -196,7 +221,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	
 	mainLayout->addLayout(topLayout);
     mainLayout->addLayout(bottomLayout);
-
+	
 	topLayout->addLayout(topLeftLayout);
 	topLayout->addLayout(topCentreLayout);
 	topLayout->addLayout(topRightLayout);

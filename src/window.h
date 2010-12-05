@@ -39,9 +39,43 @@ class Window : public QWidget
     private:
         // Declare all widgets that will need to be accessed outside of the
         // constructor (for example, if you need to get the value of a slider)
+		QLineEdit *pokePersonalityEdit;
+		QLineEdit *pokeNameEdit;
+		QLineEdit *pokeTrainerIDEdit;
+		QLineEdit *pokeTrainerNameEdit;
+		
+		QComboBox *pokeStatusEdit;
+		QComboBox *pokeMarkEdit;
+		QComboBox *pokePokeballEdit;
+		QComboBox *pokeLocationEdit;
+
+		QComboBox *pokeHeldEdit;
 		QLineEdit *pokeExperienceEdit;
 		QLineEdit *pokeLevelEdit;
-		QLineEdit *pokePersonalityEdit;
+		QComboBox *pokeSpeciesEdit;
+		
+		QComboBox *pokeAtk1;
+		QSpinBox *pokePP1;
+		QComboBox *pokeAtk2;
+		QSpinBox *pokePP2;
+		QComboBox *pokeAtk3;
+		QSpinBox *pokePP3;
+		QComboBox *pokeAtk4;
+		QSpinBox *pokePP4;
+		
+		QSpinBox *pokeHPEV;
+		QSpinBox *pokeAtkEV;
+		QSpinBox *pokeDefEV;
+		QSpinBox *pokeSpdEV;
+		QSpinBox *pokeSpAtkEV;
+		QSpinBox *pokeSpDefEV;
+		
+		QSpinBox *pokeHPIV;
+		QSpinBox *pokeAtkIV;
+		QSpinBox *pokeDefIV;
+		QSpinBox *pokeSpdIV;
+		QSpinBox *pokeSpAtkIV;
+		QSpinBox *pokeSpDefIV;
 };
 
 #endif
