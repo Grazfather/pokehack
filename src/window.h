@@ -35,6 +35,8 @@ class Window : public QWidget
 		void save();
 		void saveAs();
 		void quit();
+		void updateTotalEVs();
+		void updateTotalIVs();
     
     private:
         // Declare all widgets that will need to be accessed outside of the

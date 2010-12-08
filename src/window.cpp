@@ -40,12 +40,8 @@ void Window::loadSave()
 	pokeSpdEV->setValue(SaveParser::Instance()->pokemon_effort[0]->speed);
 	pokeSpAtkEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spatk);
 	pokeSpDefEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spdef);
-	// Recalculate total and update label.
+	// Total label will update itself since it is waiting on a signal from each spinbox
 	// TODO: Add a validator to the above spin boxes to force a user to keep them <= 510
-	pokeTotalEVs->setText("Total EVs: " + QString::number(SaveParser::Instance()->pokemon_effort[0]->hp + \
-								SaveParser::Instance()->pokemon_effort[0]->attack + SaveParser::Instance()->pokemon_effort[0]->defense + \
-								SaveParser::Instance()->pokemon_effort[0]->speed + SaveParser::Instance()->pokemon_effort[0]->spatk + \
-								SaveParser::Instance()->pokemon_effort[0]->spdef));
 	
 	pokeHPIV->setValue(SaveParser::Instance()->pokemon_misc[0]->hpiv);
 	pokeAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->atkiv);
@@ -53,11 +49,19 @@ void Window::loadSave()
 	pokeSpdIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdiv);
 	pokeSpAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spatkiv);
 	pokeSpDefIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdefiv);
-	// Recalculate total and update label.
-	pokeTotalIVs->setText("Total IVs: " + QString::number(SaveParser::Instance()->pokemon_misc[0]->hpiv + \
-								SaveParser::Instance()->pokemon_misc[0]->atkiv + SaveParser::Instance()->pokemon_misc[0]->defiv + \
-								SaveParser::Instance()->pokemon_misc[0]->spdiv + SaveParser::Instance()->pokemon_misc[0]->spatkiv + \
-								SaveParser::Instance()->pokemon_misc[0]->spdefiv));
+	// Total label will update itself since it is waiting on a signal from each spinbox
+}
+
+void Window::updateTotalEVs()
+{
+	pokeTotalEVs->setText("Total EVs: " + QString::number(pokeHPEV->value() + pokeAtkEV->value() + pokeDefEV->value() + \
+										pokeSpdEV->value() + pokeSpAtkEV->value() + pokeSpDefEV->value()));
+}
+
+void Window::updateTotalIVs()
+{
+	pokeTotalIVs->setText("Total IVs: " + QString::number(pokeHPIV->value() + pokeAtkIV->value() + pokeDefIV->value() + \
+										pokeSpdIV->value() + pokeSpAtkIV->value() + pokeSpDefIV->value()));
 }
 
 void Window::save()
@@ -163,22 +167,28 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	bottomLayout->addLayout(pokeAttackLayout);
 	
 	// Pokemon EVs
-	QFormLayout *pokeEVsLayout = new QFormLayout();
+	pokeTotalEVs = new QLabel(tr("Total EVs: "));
 	pokeHPEV = new QSpinBox();
 	pokeHPEV->setRange(0, 255);
+	QObject::connect(pokeHPEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	pokeAtkEV = new QSpinBox();
 	pokeAtkEV->setRange(0, 255);
+	QObject::connect(pokeAtkEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	pokeDefEV = new QSpinBox();
 	pokeDefEV->setRange(0, 255);
+	QObject::connect(pokeDefEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	pokeSpdEV = new QSpinBox();
 	pokeSpdEV->setRange(0, 255);
+	QObject::connect(pokeSpdEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	pokeSpAtkEV = new QSpinBox();
 	pokeSpAtkEV->setRange(0, 255);
+	QObject::connect(pokeSpAtkEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	pokeSpDefEV = new QSpinBox();
 	pokeSpDefEV->setRange(0, 255);
-	pokeTotalEVs = new QLabel(tr("Total EVs: "));
+	QObject::connect(pokeSpDefEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
+	QFormLayout *pokeEVsLayout = new QFormLayout();
 	
-	pokeEVsLayout->addWidget(new QLabel(tr("EVs")));
+	pokeEVsLayout->addRow(new QLabel(tr("EVs:")));
 	pokeEVsLayout->addRow(tr("HP:"), pokeHPEV);
 	pokeEVsLayout->addRow(tr("Atk:"), pokeAtkEV);
 	pokeEVsLayout->addRow(tr("Def:"), pokeDefEV);
@@ -193,19 +203,25 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	QFormLayout* pokeIVsLayout = new QFormLayout();
 	pokeHPIV = new QSpinBox();
 	pokeHPIV->setRange(0, 31);
+	QObject::connect(pokeHPIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeAtkIV = new QSpinBox();
 	pokeAtkIV->setRange(0, 31);
+	QObject::connect(pokeAtkIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeDefIV = new QSpinBox();
 	pokeDefIV->setRange(0, 31);
+	QObject::connect(pokeDefIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeSpdIV = new QSpinBox();
 	pokeSpdIV->setRange(0, 31);
+	QObject::connect(pokeSpdIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeSpAtkIV = new QSpinBox();
 	pokeSpAtkIV->setRange(0, 31);
+	QObject::connect(pokeSpAtkIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeSpDefIV = new QSpinBox();
 	pokeSpDefIV->setRange(0, 31);
+	QObject::connect(pokeSpDefIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeTotalIVs = new QLabel(tr("Total IVs: "));
 	
-	pokeIVsLayout->addWidget(new QLabel(tr("IVs")));
+	pokeIVsLayout->addRow(new QLabel(tr("IVs:")));
 	pokeIVsLayout->addRow(tr("HP:"), pokeHPIV);
 	pokeIVsLayout->addRow(tr("Atk:"), pokeAtkIV);
 	pokeIVsLayout->addRow(tr("Def:"), pokeDefIV);
