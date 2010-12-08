@@ -6,51 +6,58 @@ using namespace std;
 
 void Window::loadSave()
 {
-/*	QString fileName = QFileDialog::getOpenFileName(
-                    "./saves",
-                    "Save files",
-                    this,
-                    "load savestate",
-                    "Choose a savestate" );*/
-	// SaveParser::Instance()->load(fileName);
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
+                    "./", tr("Savestates (*.*)") );
+	SaveParser::Instance()->load(fileName.toLocal8Bit().data());
 		
-		pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
-		// QLineEdit *pokeNameEdit;
-		pokeTrainerIDEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->otid, 16).toUpper());
-		// QLineEdit *pokeTrainerNameEdit;
-		
-		// QComboBox *pokeStatusEdit;
-		// QComboBox *pokeMarkEdit;
-		// QComboBox *pokePokeballEdit;
-		// QComboBox *pokeLocationEdit;
+	pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
+	// QLineEdit *pokeNameEdit;
+	pokeTrainerIDEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->otid, 16).toUpper());
+	// QLineEdit *pokeTrainerNameEdit;
+	
+	// QComboBox *pokeStatusEdit;
+	// QComboBox *pokeMarkEdit;
+	// QComboBox *pokePokeballEdit;
+	// QComboBox *pokeLocationEdit;
 
-		// QComboBox *pokeHeldEdit;
-		pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
-		pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
-		// QComboBox *pokeSpeciesEdit;
-		
-		// QComboBox *pokeAtk1;
-		pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
-		// QComboBox *pokeAtk2;
-		pokePP2->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp2);
-		// QComboBox *pokeAtk3;
-		pokePP3->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp3);
-		// QComboBox *pokeAtk4;
-		pokePP4->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp4);
-		
-		// QSpinBox *pokeHPEV;
-		// QSpinBox *pokeAtkEV;
-		// QSpinBox *pokeDefEV;
-		// QSpinBox *pokeSpdEV;
-		// QSpinBox *pokeSpAtkEV;
-		// QSpinBox *pokeSpDefEV;
-		
-		// QSpinBox *pokeHPIV;
-		// QSpinBox *pokeAtkIV;
-		// QSpinBox *pokeDefIV;
-		// QSpinBox *pokeSpdIV;
-		// QSpinBox *pokeSpAtkIV;
-		// QSpinBox *pokeSpDefIV;
+	// QComboBox *pokeHeldEdit;
+	pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
+	pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
+	// QComboBox *pokeSpeciesEdit;
+	
+	// QComboBox *pokeAtk1;
+	pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
+	// QComboBox *pokeAtk2;
+	pokePP2->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp2);
+	// QComboBox *pokeAtk3;
+	pokePP3->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp3);
+	// QComboBox *pokeAtk4;
+	pokePP4->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp4);
+	
+	pokeHPEV->setValue(SaveParser::Instance()->pokemon_effort[0]->hp);
+	pokeAtkEV->setValue(SaveParser::Instance()->pokemon_effort[0]->attack);
+	pokeDefEV->setValue(SaveParser::Instance()->pokemon_effort[0]->defense);
+	pokeSpdEV->setValue(SaveParser::Instance()->pokemon_effort[0]->speed);
+	pokeSpAtkEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spatk);
+	pokeSpDefEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spdef);
+	// Recalculate total and update label.
+	// TODO: Add a validator to the above spin boxes to force a user to keep them <= 510
+	pokeTotalEVs->setText("Total EVs: " + QString::number(SaveParser::Instance()->pokemon_effort[0]->hp + \
+								SaveParser::Instance()->pokemon_effort[0]->attack + SaveParser::Instance()->pokemon_effort[0]->defense + \
+								SaveParser::Instance()->pokemon_effort[0]->speed + SaveParser::Instance()->pokemon_effort[0]->spatk + \
+								SaveParser::Instance()->pokemon_effort[0]->spdef));
+	
+	pokeHPIV->setValue(SaveParser::Instance()->pokemon_misc[0]->hpiv);
+	pokeAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->atkiv);
+	pokeDefIV->setValue(SaveParser::Instance()->pokemon_misc[0]->defiv);
+	pokeSpdIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdiv);
+	pokeSpAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spatkiv);
+	pokeSpDefIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdefiv);
+	// Recalculate total and update label.
+	pokeTotalIVs->setText("Total IVs: " + QString::number(SaveParser::Instance()->pokemon_misc[0]->hpiv + \
+								SaveParser::Instance()->pokemon_misc[0]->atkiv + SaveParser::Instance()->pokemon_misc[0]->defiv + \
+								SaveParser::Instance()->pokemon_misc[0]->spdiv + SaveParser::Instance()->pokemon_misc[0]->spatkiv + \
+								SaveParser::Instance()->pokemon_misc[0]->spdefiv));
 }
 
 void Window::save()
@@ -169,7 +176,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeSpAtkEV->setRange(0, 255);
 	pokeSpDefEV = new QSpinBox();
 	pokeSpDefEV->setRange(0, 255);
-	QLabel *pokeTotalEVs = new QLabel(tr("Total EVs: "));
+	pokeTotalEVs = new QLabel(tr("Total EVs: "));
 	
 	pokeEVsLayout->addWidget(new QLabel(tr("EVs")));
 	pokeEVsLayout->addRow(tr("HP:"), pokeHPEV);
@@ -178,7 +185,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeEVsLayout->addRow(tr("Spd:"), pokeSpdEV);
 	pokeEVsLayout->addRow(tr("SpAtk:"), pokeSpAtkEV);
 	pokeEVsLayout->addRow(tr("SpDef:"), pokeSpDefEV);
-	pokeEVsLayout->addWidget(pokeTotalEVs);
+	pokeEVsLayout->addRow(pokeTotalEVs);
 	
 	bottomLayout->addLayout(pokeEVsLayout);
 	
@@ -196,7 +203,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeSpAtkIV->setRange(0, 31);
 	pokeSpDefIV = new QSpinBox();
 	pokeSpDefIV->setRange(0, 31);
-	QLabel *pokeTotalIVs = new QLabel(tr("Total IVs: "));
+	pokeTotalIVs = new QLabel(tr("Total IVs: "));
 	
 	pokeIVsLayout->addWidget(new QLabel(tr("IVs")));
 	pokeIVsLayout->addRow(tr("HP:"), pokeHPIV);
@@ -205,7 +212,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeIVsLayout->addRow(tr("Spd:"), pokeSpdIV);
 	pokeIVsLayout->addRow(tr("SpAtk:"), pokeSpAtkIV);
 	pokeIVsLayout->addRow(tr("SpDef:"), pokeSpDefIV);
-	pokeIVsLayout->addWidget(pokeTotalIVs);
+	pokeIVsLayout->addRow(pokeTotalIVs);
 	
 	bottomLayout->addLayout(pokeIVsLayout);
 	

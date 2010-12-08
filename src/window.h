@@ -69,6 +69,7 @@ class Window : public QWidget
 		QSpinBox *pokeSpdEV;
 		QSpinBox *pokeSpAtkEV;
 		QSpinBox *pokeSpDefEV;
+		QLabel *pokeTotalEVs;
 		
 		QSpinBox *pokeHPIV;
 		QSpinBox *pokeAtkIV;
@@ -76,6 +77,7 @@ class Window : public QWidget
 		QSpinBox *pokeSpdIV;
 		QSpinBox *pokeSpAtkIV;
 		QSpinBox *pokeSpDefIV;
+		QLabel *pokeTotalIVs;
 };
 
 #endif
