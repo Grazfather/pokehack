@@ -190,8 +190,8 @@
 189 - Amulet Coin
 190 - Cleanse Tag
 191 - Soul Dew
-192 - DeepSeaTooth
-193 - DeepSeaScale
+192 - Deep Sea Tooth
+193 - Deep Sea Scale
 194 - Smoke Ball
 195 - Everstone
 196 - Focus Band
@@ -208,3 +208,20 @@
 207 - Black Belt
 208 - Magnet
 209 - Mystic Water
+210 - Sharp Beak
+213 - Poison Barb
+214 - Never Melt Ice
+215 - Spell Tag
+216 - Twisted Spoon
+217 - Charcoal
+218 - Dragon Fang
+219 - Silk Scarf
+220 - Up-Grade
+221 - Shell Bell
+222 - Sea Incense
+223 - Lax Incense
+224 - Lucky Punch
+225 - Metal Powder
+226 - Thick Club
+227 - Stick
+<end>

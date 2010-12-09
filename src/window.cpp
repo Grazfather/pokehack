@@ -2,8 +2,6 @@
 #include "SaveParser.h"
 #include <iostream>
 
-using namespace std;
-
 void Window::loadSave()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
@@ -20,18 +18,18 @@ void Window::loadSave()
 	// QComboBox *pokePokeballEdit;
 	// QComboBox *pokeLocationEdit;
 
-	// QComboBox *pokeHeldEdit;
+	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->held)));
 	pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
 	pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
-	// QComboBox *pokeSpeciesEdit;
+	pokeSpeciesEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->species)));
 	
-	// QComboBox *pokeAtk1;
+	pokeAtk1->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk1);
 	pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
-	// QComboBox *pokeAtk2;
+	pokeAtk2->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk2);
 	pokePP2->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp2);
-	// QComboBox *pokeAtk3;
+	pokeAtk3->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk3);
 	pokePP3->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp3);
-	// QComboBox *pokeAtk4;
+	pokeAtk4->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk4);
 	pokePP4->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp4);
 	
 	pokeHPEV->setValue(SaveParser::Instance()->pokemon_effort[0]->hp);
@@ -127,12 +125,12 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topCentreLayout->addRow(tr("&Location:"), pokeLocationEdit);
 	
 	 // Right
-	QComboBox* pokeHeldEdit = new QComboBox();
+	pokeHeldEdit = new ItemComboBox();
 	pokeExperienceEdit = new QLineEdit();
 	pokeExperienceEdit->setValidator(new QIntValidator(this));
 	pokeLevelEdit = new QLineEdit();
 	pokeLevelEdit->setValidator(new QIntValidator(this));
-	QComboBox* pokeSpeciesEdit = new QComboBox();
+	pokeSpeciesEdit = new SpeciesComboBox();
 
 	topRightLayout->addRow(tr("&Item Held:"), pokeHeldEdit);
 	topRightLayout->addRow(tr("&Experience:"), pokeExperienceEdit);
@@ -140,21 +138,22 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topRightLayout->addRow(tr("&Species:"), pokeSpeciesEdit);
 	
 	// Pokemon Attacks
-	QGridLayout *pokeAttackLayout = new QGridLayout();
-	pokeAtk1 = new QComboBox();
+	//QGridLayout *pokeAttackLayout = new QGridLayout();
+	QFormLayout *pokeAttackLayout = new QFormLayout();
+	pokeAtk1 = new AttackComboBox();
 	pokePP1 = new QSpinBox();
-	pokePP1->setRange(0, 56);
-	pokeAtk2 = new QComboBox();
+	pokePP1->setRange(0, 64);
+	pokeAtk2 = new AttackComboBox();
 	pokePP2 = new QSpinBox();
-	pokePP2->setRange(0, 56);
-	pokeAtk3 = new QComboBox();
+	pokePP2->setRange(0, 64);
+	pokeAtk3 = new AttackComboBox();
 	pokePP3 = new QSpinBox();
-	pokePP3->setRange(0, 56);
-	pokeAtk4 = new QComboBox();
+	pokePP3->setRange(0, 64);
+	pokeAtk4 = new AttackComboBox();
 	pokePP4 = new QSpinBox();
-	pokePP4->setRange(0, 56);
+	pokePP4->setRange(0, 64);
 	
-	pokeAttackLayout->addWidget(new QLabel(tr("Attacks")), 0, 0);
+	/*pokeAttackLayout->addWidget(new QLabel(tr("Attacks:")), 0, 0);
 	pokeAttackLayout->addWidget(pokeAtk1, 1, 0);
 	pokeAttackLayout->addWidget(pokePP1, 1, 1);
 	pokeAttackLayout->addWidget(pokeAtk2, 1, 2);
@@ -163,6 +162,13 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeAttackLayout->addWidget(pokePP3, 2, 1);
 	pokeAttackLayout->addWidget(pokeAtk4, 2, 2);
 	pokeAttackLayout->addWidget(pokePP4, 2, 3);	
+	*/
+	
+	pokeAttackLayout->addRow(new QLabel(tr("Attacks:")));
+	pokeAttackLayout->addRow(pokeAtk1, pokePP1);
+	pokeAttackLayout->addRow(pokeAtk2, pokePP2);
+	pokeAttackLayout->addRow(pokeAtk3, pokePP3);
+	pokeAttackLayout->addRow(pokeAtk4, pokePP4);
 	
 	bottomLayout->addLayout(pokeAttackLayout);
 	

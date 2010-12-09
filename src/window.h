@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#define WIN_W 400
+#define WIN_W 450
 #define WIN_H 300
 
 // Include all the headers for the Qt widgets you will be using
@@ -16,6 +16,9 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QFileDialog>
+#include "AttackComboBox.h"
+#include "ItemComboBox.h"
+#include "SpeciesComboBox.h"
 
 #include <QDebug>
 
@@ -51,18 +54,18 @@ class Window : public QWidget
 		QComboBox *pokePokeballEdit;
 		QComboBox *pokeLocationEdit;
 
-		QComboBox *pokeHeldEdit;
+		ItemComboBox *pokeHeldEdit;
 		QLineEdit *pokeExperienceEdit;
 		QLineEdit *pokeLevelEdit;
-		QComboBox *pokeSpeciesEdit;
+		SpeciesComboBox *pokeSpeciesEdit;
 		
-		QComboBox *pokeAtk1;
+		AttackComboBox *pokeAtk1;
 		QSpinBox *pokePP1;
-		QComboBox *pokeAtk2;
+		AttackComboBox *pokeAtk2;
 		QSpinBox *pokePP2;
-		QComboBox *pokeAtk3;
+		AttackComboBox *pokeAtk3;
 		QSpinBox *pokePP3;
-		QComboBox *pokeAtk4;
+		AttackComboBox *pokeAtk4;
 		QSpinBox *pokePP4;
 		
 		QSpinBox *pokeHPEV;
