@@ -21,7 +21,7 @@ void Window::loadSave()
 	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->held)));
 	pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
 	pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
-	pokeSpeciesEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->species)));
+	pokeSpeciesEdit->setCurrentIndex(pokeSpeciesEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->species)));
 	
 	pokeAtk1->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk1);
 	pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
