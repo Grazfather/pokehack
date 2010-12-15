@@ -71,10 +71,11 @@ typedef struct {
 	unsigned char pokerus;
 	unsigned char location;
 	signed char level;
-	unsigned char pokeball; 		// As well as trainer gender?
-	//unsigned int IVs; 				// TODO: Split into groups of 5 bytes + 2 for egg
-	unsigned short int ability:1;
-	unsigned short int egg:1;
+	unsigned char x:3;				// unused
+	unsigned char pokeball:4;
+	unsigned char tgender:1;
+	unsigned int ability:1;
+	unsigned int egg:1;
 	unsigned int spdefiv:5;
 	unsigned int spatkiv:5;
 	unsigned int spdiv:5;
