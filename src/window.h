@@ -19,6 +19,8 @@
 #include "AttackComboBox.h"
 #include "ItemComboBox.h"
 #include "SpeciesComboBox.h"
+#include "PokeballComboBox.h"
+#include "StatusComboBox.h"
 
 #include <QDebug>
 
@@ -49,9 +51,9 @@ class Window : public QWidget
 		QLineEdit *pokeTrainerIDEdit;
 		QLineEdit *pokeTrainerNameEdit;
 		
-		QComboBox *pokeStatusEdit;
+		StatusComboBox *pokeStatusEdit;
 		QComboBox *pokeMarkEdit;
-		QComboBox *pokePokeballEdit;
+		PokeballComboBox *pokePokeballEdit;
 		QComboBox *pokeLocationEdit;
 
 		ItemComboBox *pokeHeldEdit;

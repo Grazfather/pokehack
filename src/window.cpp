@@ -5,17 +5,19 @@
 void Window::loadSave()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
-                    "./", tr("Savestates (*.*)") );
-	SaveParser::Instance()->load(fileName.toLocal8Bit().data());
-		
+                    "./../..", tr("Savestates (*.*)") );
+	int err;
+	err = SaveParser::Instance()->load(fileName.toLocal8Bit().data());
+	pokeTrainerNameEdit->setText(QString::number(err));
+	
 	pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
 	// QLineEdit *pokeNameEdit;
 	pokeTrainerIDEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->otid, 16).toUpper());
 	// QLineEdit *pokeTrainerNameEdit;
 	
-	// QComboBox *pokeStatusEdit;
+	pokeStatusEdit->setCurrentIndex(pokeStatusEdit->findData(QVariant(SaveParser::Instance()->pokemon[0]->status)));
 	// QComboBox *pokeMarkEdit;
-	// QComboBox *pokePokeballEdit;
+	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(SaveParser::Instance()->pokemon_misc[0]->pokeball)));
 	// QComboBox *pokeLocationEdit;
 
 	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->held)));
@@ -114,9 +116,9 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topLeftLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
 	
 	 // Centre
-	pokeStatusEdit = new QComboBox();
+	pokeStatusEdit = new StatusComboBox();
 	pokeMarkEdit = new QComboBox();
-	pokePokeballEdit = new QComboBox();
+	pokePokeballEdit = new PokeballComboBox();
 	pokeLocationEdit = new QComboBox();
 
 	topCentreLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
