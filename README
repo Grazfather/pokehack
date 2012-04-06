@@ -20,7 +20,7 @@ NOTES:
 -Does not currently support viewing any pokemon besides the first in your belt
 -Has been tested only on Pokemon FireRed
 
-== Console ==
+== Command line ==
 First edit pkc3.c to have it change any attribute of the pokemon you want
 === Compile ===
 [In root repo directory ]

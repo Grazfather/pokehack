@@ -2,15 +2,15 @@
 
 StatusComboBox::StatusComboBox( QWidget* parent ) : QComboBox( parent )
 {
-	// Add all pokeball types available in Gen 3 ) );
+	// Add all pokemon states available in Gen 3 ) );
 	addItem(tr("Normal"), QVariant( 0 ));
 	addItem(tr("Sleep (1)"), QVariant( 1 ));
 	addItem(tr("Sleep (2)"), QVariant( 2 ));
 	addItem(tr("Sleep (3)"), QVariant( 3 ));
-	addItem(tr("Sleep (3)"), QVariant( 4 ));
-	addItem(tr("Sleep (3)"), QVariant( 8 ));
-	addItem(tr("Sleep (3)"), QVariant( 6 ));
-	addItem(tr("Sleep (3)"), QVariant( 7 ));
+	addItem(tr("Sleep (4)"), QVariant( 4 ));
+	addItem(tr("Sleep (5)"), QVariant( 8 ));
+	addItem(tr("Sleep (6)"), QVariant( 6 ));
+	addItem(tr("Sleep (7)"), QVariant( 7 ));
 	addItem(tr("Poison"), QVariant( 8 ));
 	addItem(tr("Burn"), QVariant( 16 ));
 	addItem(tr("Frozen"), QVariant( 32 ));

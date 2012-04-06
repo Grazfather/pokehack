@@ -4,10 +4,15 @@
 
 void Window::loadSave()
 {
+	int err;
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
                     "./../..", tr("Savestates (*.*)") );
-	int err;
+
 	err = SaveParser::Instance()->load(fileName.toLocal8Bit().data());
+	if (err)
+	{
+		return;
+	}
 	pokeTrainerNameEdit->setText(QString::number(err));
 	
 	pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
