@@ -1,5 +1,5 @@
 #include "window.h"
-#include "SaveParser.h"
+#include <QtDebug>
 #include <iostream>
 
 void Window::loadSave()
@@ -8,52 +8,52 @@ void Window::loadSave()
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
                     "./../..", tr("Savestates (*.*)") );
 
-	err = SaveParser::Instance()->load(fileName.toLocal8Bit().data());
+	err = parser->load(fileName.toLocal8Bit().data());
 	if (err)
 	{
 		return;
 	}
-	pokeTrainerNameEdit->setText(QString::number(err));
-	
-	pokePersonalityEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->personality, 16).toUpper());
-	// QLineEdit *pokeNameEdit;
-	pokeTrainerIDEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->otid, 16).toUpper());
+	openFileName = fileName;
+
+	pokePersonalityEdit->setText(QString::number(parser->pokemon[0]->personality, 16).toUpper());
+	// pokeNameEdit->setText(QString::
+	pokeTrainerIDEdit->setText(QString::number(parser->pokemon[0]->otid, 16).toUpper());
 	// QLineEdit *pokeTrainerNameEdit;
-	
-	pokeStatusEdit->setCurrentIndex(pokeStatusEdit->findData(QVariant(SaveParser::Instance()->pokemon[0]->status)));
+
+	pokeStatusEdit->setCurrentIndex(pokeStatusEdit->findData(QVariant(parser->pokemon[0]->status)));
 	// QComboBox *pokeMarkEdit;
-	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(SaveParser::Instance()->pokemon_misc[0]->pokeball)));
+	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(parser->pokemon_misc[0]->pokeball)));
 	// QComboBox *pokeLocationEdit;
 
-	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->held)));
-	pokeExperienceEdit->setText(QString::number(SaveParser::Instance()->pokemon_growth[0]->xp));
-	pokeLevelEdit->setText(QString::number(SaveParser::Instance()->pokemon[0]->level));
-	pokeSpeciesEdit->setCurrentIndex(pokeSpeciesEdit->findData(QVariant(SaveParser::Instance()->pokemon_growth[0]->species)));
-	
-	pokeAtk1->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk1);
-	pokePP1->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp1);
-	pokeAtk2->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk2);
-	pokePP2->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp2);
-	pokeAtk3->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk3);
-	pokePP3->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp3);
-	pokeAtk4->setCurrentIndex(SaveParser::Instance()->pokemon_attacks[0]->atk4);
-	pokePP4->setValue(SaveParser::Instance()->pokemon_attacks[0]->pp4);
-	
-	pokeHPEV->setValue(SaveParser::Instance()->pokemon_effort[0]->hp);
-	pokeAtkEV->setValue(SaveParser::Instance()->pokemon_effort[0]->attack);
-	pokeDefEV->setValue(SaveParser::Instance()->pokemon_effort[0]->defense);
-	pokeSpdEV->setValue(SaveParser::Instance()->pokemon_effort[0]->speed);
-	pokeSpAtkEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spatk);
-	pokeSpDefEV->setValue(SaveParser::Instance()->pokemon_effort[0]->spdef);
+	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(parser->pokemon_growth[0]->held)));
+	pokeExperienceEdit->setText(QString::number(parser->pokemon_growth[0]->xp));
+	pokeLevelEdit->setText(QString::number(parser->pokemon[0]->level));
+	pokeSpeciesEdit->setCurrentIndex(pokeSpeciesEdit->findData(QVariant(parser->pokemon_growth[0]->species)));
+
+	pokeAtk1->setCurrentIndex(parser->pokemon_attacks[0]->atk1);
+	pokePP1->setValue(parser->pokemon_attacks[0]->pp1);
+	pokeAtk2->setCurrentIndex(parser->pokemon_attacks[0]->atk2);
+	pokePP2->setValue(parser->pokemon_attacks[0]->pp2);
+	pokeAtk3->setCurrentIndex(parser->pokemon_attacks[0]->atk3);
+	pokePP3->setValue(parser->pokemon_attacks[0]->pp3);
+	pokeAtk4->setCurrentIndex(parser->pokemon_attacks[0]->atk4);
+	pokePP4->setValue(parser->pokemon_attacks[0]->pp4);
+
+	pokeHPEV->setValue(parser->pokemon_effort[0]->hp);
+	pokeAtkEV->setValue(parser->pokemon_effort[0]->attack);
+	pokeDefEV->setValue(parser->pokemon_effort[0]->defense);
+	pokeSpdEV->setValue(parser->pokemon_effort[0]->speed);
+	pokeSpAtkEV->setValue(parser->pokemon_effort[0]->spatk);
+	pokeSpDefEV->setValue(parser->pokemon_effort[0]->spdef);
 	// Total label will update itself since it is waiting on a signal from each spinbox
 	// TODO: Add a validator to the above spin boxes to force a user to keep them <= 510
-	
-	pokeHPIV->setValue(SaveParser::Instance()->pokemon_misc[0]->hpiv);
-	pokeAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->atkiv);
-	pokeDefIV->setValue(SaveParser::Instance()->pokemon_misc[0]->defiv);
-	pokeSpdIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdiv);
-	pokeSpAtkIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spatkiv);
-	pokeSpDefIV->setValue(SaveParser::Instance()->pokemon_misc[0]->spdefiv);
+
+	pokeHPIV->setValue(parser->pokemon_misc[0]->hpiv);
+	pokeAtkIV->setValue(parser->pokemon_misc[0]->atkiv);
+	pokeDefIV->setValue(parser->pokemon_misc[0]->defiv);
+	pokeSpdIV->setValue(parser->pokemon_misc[0]->spdiv);
+	pokeSpAtkIV->setValue(parser->pokemon_misc[0]->spatkiv);
+	pokeSpDefIV->setValue(parser->pokemon_misc[0]->spdefiv);
 	// Total label will update itself since it is waiting on a signal from each spinbox
 }
 
@@ -69,9 +69,86 @@ void Window::updateTotalIVs()
 										pokeSpdIV->value() + pokeSpAtkIV->value() + pokeSpDefIV->value()));
 }
 
+#undef Q_ASSERT
+#define Q_ASSERT(x) {}while(0);
+
 void Window::save()
 {
-	
+	int i = 0; // For now we're only viewing/saving first pokemon
+
+	// Save values back to ramfile
+
+	// Don't save personality or OTID for now
+	//Q_ASSERT(parser->pokemon[i]->personality == pokePersonalityEdit->text().toInt(NULL, 16));
+	//parser->pokemon[i]->personality = pokePersonalityEdit->text().toInt(NULL, 16);
+	// pokeTrainerNameEdit;
+	// pokeNameEdit->setText(QString::
+	//Q_ASSERT(parser->pokemon[i]->otid == pokeTrainerIDEdit->text().toInt(NULL, 16));
+	//parser->pokemon[i]->otid = pokeTrainerIDEdit->text().toInt(NULL, 16);
+
+	Q_ASSERT(parser->pokemon[i]->status = pokeStatusEdit->currentIndex());
+	parser->pokemon[i]->status = pokeStatusEdit->currentIndex();
+	// QComboBox *pokeMarkEdit;
+	Q_ASSERT(parser->pokemon_misc[i]->pokeball = pokePokeballEdit->currentIndex());
+	parser->pokemon_misc[i]->pokeball = pokePokeballEdit->currentIndex();
+	// QComboBox *pokeLocationEdit;
+
+	qDebug() << parser->pokemon_growth[i]->held << " - " << pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt() << endl;
+	Q_ASSERT(parser->pokemon_growth[i]->held == pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt());
+	parser->pokemon_growth[i]->held = pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt();
+	Q_ASSERT(parser->pokemon_growth[i]->xp == pokeExperienceEdit->text().toInt());
+	parser->pokemon_growth[i]->xp = pokeExperienceEdit->text().toInt();
+	Q_ASSERT(parser->pokemon[i]->level == pokeLevelEdit->text().toInt());
+	parser->pokemon[i]->level = pokeLevelEdit->text().toInt();
+	Q_ASSERT(parser->pokemon_growth[i]->species == pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt());
+	parser->pokemon_growth[i]->species = pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt();
+
+	Q_ASSERT(parser->pokemon_attacks[i]->atk1 == pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt());
+	parser->pokemon_attacks[i]->atk1 = pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt();
+	Q_ASSERT(parser->pokemon_attacks[i]->pp1 == pokePP1->value());
+	parser->pokemon_attacks[i]->pp1 = pokePP1->value();
+	Q_ASSERT(parser->pokemon_attacks[i]->atk2 == pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt());
+	parser->pokemon_attacks[i]->atk2 = pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt();
+	Q_ASSERT(parser->pokemon_attacks[i]->pp2 == pokePP2->value());
+	parser->pokemon_attacks[i]->pp2 = pokePP2->value();
+	Q_ASSERT(parser->pokemon_attacks[i]->atk3 == pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt());
+	parser->pokemon_attacks[i]->atk3 = pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt();
+	Q_ASSERT(parser->pokemon_attacks[i]->pp3 == pokePP3->value());
+	parser->pokemon_attacks[i]->pp3 = pokePP3->value();
+	Q_ASSERT(parser->pokemon_attacks[i]->atk4 == pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt());
+	parser->pokemon_attacks[i]->atk4 = pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt();
+	Q_ASSERT(parser->pokemon_attacks[i]->pp4 == pokePP4->value());
+	parser->pokemon_attacks[i]->pp4 = pokePP4->value();
+
+	Q_ASSERT(parser->pokemon_effort[i]->hp == pokeHPEV->value());
+	parser->pokemon_effort[i]->hp = pokeHPEV->value();
+	Q_ASSERT(parser->pokemon_effort[i]->attack == pokeAtkEV->value());
+	parser->pokemon_effort[i]->attack = pokeAtkEV->value();
+	Q_ASSERT(parser->pokemon_effort[i]->defense == pokeDefEV->value());
+	parser->pokemon_effort[i]->defense = pokeDefEV->value();
+	Q_ASSERT(parser->pokemon_effort[i]->speed == pokeSpdEV->value());
+	parser->pokemon_effort[i]->speed = pokeSpdEV->value();
+	Q_ASSERT(parser->pokemon_effort[i]->spatk == pokeSpAtkEV->value());
+	parser->pokemon_effort[i]->spatk = pokeSpAtkEV->value();
+	Q_ASSERT(parser->pokemon_effort[i]->spdef == pokeSpDefEV->value());
+	parser->pokemon_effort[i]->spdef = pokeSpDefEV->value();
+	// TODO: Assert total EVs are within limit
+
+	Q_ASSERT(parser->pokemon_misc[i]->hpiv == pokeHPIV->value());
+	parser->pokemon_misc[i]->hpiv = pokeHPIV->value();
+	Q_ASSERT(parser->pokemon_misc[i]->atkiv == pokeAtkIV->value());
+	parser->pokemon_misc[i]->atkiv = pokeAtkIV->value();
+	Q_ASSERT(parser->pokemon_misc[i]->defiv == pokeDefIV->value());
+	parser->pokemon_misc[i]->defiv = pokeDefIV->value();
+	Q_ASSERT(parser->pokemon_misc[i]->spdiv == pokeSpdIV->value());
+	parser->pokemon_misc[i]->spdiv = pokeSpdIV->value();
+	Q_ASSERT(parser->pokemon_misc[i]->spatkiv == pokeSpAtkIV->value());
+	parser->pokemon_misc[i]->spatkiv = pokeSpAtkIV->value();
+	Q_ASSERT(parser->pokemon_misc[i]->spdefiv == pokeSpDefIV->value());
+	parser->pokemon_misc[i]->spdefiv = pokeSpDefIV->value();
+
+	// Save ramfile back to actual file
+	parser->save(openFileName.toLocal8Bit().data());
 }
 
 void Window::saveAs()
@@ -86,6 +163,9 @@ void Window::quit()
 
 Window::Window( QWidget* parent ) : QWidget( parent )
 {
+	// Grab parser instance
+	parser = SaveParser::Instance();
+
     // Basic layout manager
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
 	 QHBoxLayout* topLayout = new QHBoxLayout();

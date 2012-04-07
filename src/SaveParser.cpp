@@ -71,7 +71,7 @@ int SaveParser::save(const char *fn)
         
         return -1;
     }
-    
+
     if (fwrite(ram, STATE_SIZE, 1, f) != 1) {
         fprintf(stderr, "error: unable to write SRAM file data.\n");
         fclose(f);
@@ -80,6 +80,12 @@ int SaveParser::save(const char *fn)
     }
     
     fclose(f);
+	
+	// re-decrypt the file so we can work with it again
+	for(int i = 0; i < NUM_POKEMON; i++)
+	{
+		pokemon[i]->checksum = encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
+	}
 	
 	return 0;
 }

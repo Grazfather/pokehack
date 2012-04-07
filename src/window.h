@@ -21,6 +21,7 @@
 #include "SpeciesComboBox.h"
 #include "PokeballComboBox.h"
 #include "StatusComboBox.h"
+#include "SaveParser.h"
 
 #include <QDebug>
 
@@ -46,6 +47,11 @@ class Window : public QWidget
     private:
         // Declare all widgets that will need to be accessed outside of the
         // constructor (for example, if you need to get the value of a slider)
+		
+		QString openFileName;
+		SaveParser *parser;
+		
+		
 		QLineEdit *pokePersonalityEdit;
 		QLineEdit *pokeNameEdit;
 		QLineEdit *pokeTrainerIDEdit;

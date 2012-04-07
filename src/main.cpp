@@ -6,7 +6,6 @@
 
 #include <qapplication.h>
 #include "window.h"
-#include "SaveParser.h"
 
 // Main program to start up gui app
 int main( int argc, char **argv )

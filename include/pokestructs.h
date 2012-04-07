@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+#ifndef POKEMON_STRUCTURES
+#define POKEMON_STRUCTURES
+
 #define STATE_SIZE 0xB49FE
 
 // Either compile for each game, allow a choice, or detect automatically
@@ -121,3 +124,5 @@ static const int DataOrderTable[24][4] = { \
 /* MAEG */ {1, 2, 3, 0}, \
 /* MEGA */ {3, 1, 2, 0}, \
 /* MEAG */ {2, 1, 3, 0} };
+
+#endif
