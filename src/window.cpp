@@ -169,6 +169,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 
 	// Basic layout manager
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
+	QFormLayout* headerLayout = new QFormLayout();
 	QHBoxLayout* topLayout = new QHBoxLayout();
 	QFormLayout* topLeftLayout = new QFormLayout();
 	QFormLayout* topCentreLayout = new QFormLayout();
@@ -184,7 +185,12 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 
 	QMenu* help = new QMenu("&Help");
 	help->addAction( "About", this, SLOT(About()), Qt::Key_F1 );
-	
+
+	// Select which game this file is from
+	// TODO: Detect this automatically
+	gameEdit = new GameComboBox();
+	headerLayout->addRow(tr("Game:"), gameEdit);
+
 	// Basic pokemon data
 	// Left
 	pokeSpeciesEdit = new SpeciesComboBox();
@@ -225,7 +231,6 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topRightLayout->addRow(tr("&Pokeball:"), pokePokeballEdit);
 	topRightLayout->addRow(tr("&Location:"), pokeLocationEdit);
 	
-
 	// Pokemon Attacks
 	QFormLayout *pokeAttackLayout = new QFormLayout();
 	pokeAtk1 = new AttackComboBox();
@@ -323,14 +328,15 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	// Pokemon Misc
 	QGridLayout* pokeMiscLayout = new QGridLayout();
 	
-	bottomLayout->addLayout(pokeMiscLayout);
-	
+	mainLayout->addLayout(headerLayout);
 	mainLayout->addLayout(topLayout);
 	mainLayout->addLayout(bottomLayout);
 	
 	topLayout->addLayout(topLeftLayout);
 	topLayout->addLayout(topCentreLayout);
 	topLayout->addLayout(topRightLayout);
+	
+	bottomLayout->addLayout(pokeMiscLayout);
 	
 	// Create a menu bar
 	QMenuBar* menu = new QMenuBar( this );

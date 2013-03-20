@@ -16,6 +16,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QFileDialog>
+#include "GameComboBox.h"
 #include "AttackComboBox.h"
 #include "ItemComboBox.h"
 #include "SpeciesComboBox.h"
@@ -66,6 +67,7 @@ class Window : public QWidget
 		QLineEdit *pokeExperienceEdit;
 		QLineEdit *pokeLevelEdit;
 		SpeciesComboBox *pokeSpeciesEdit;
+		GameComboBox *gameEdit;
 		
 		AttackComboBox *pokeAtk1;
 		QSpinBox *pokePP1;

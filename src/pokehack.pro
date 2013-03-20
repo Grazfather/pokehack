@@ -7,6 +7,7 @@ SOURCES += ItemComboBox.cpp
 SOURCES += SpeciesComboBox.cpp
 SOURCES += PokeballComboBox.cpp
 SOURCES += StatusComboBox.cpp
+SOURCES += GameComboBox.cpp
 
 HEADERS += window.h
 HEADERS += ../include/pokestructs.h
@@ -16,5 +17,6 @@ HEADERS += ItemComboBox.h
 HEADERS += SpeciesComboBox.h
 HEADERS += PokeballComboBox.h
 HEADERS += StatusComboBox.h
+HEADERS += GameComboBox.h
 
 CONFIG += qt
