@@ -1,6 +1,6 @@
 /*
  * Pokemon Gen 3 Save-state editor
- * Copyright (C) 2010 Grazfather
+ * Copyright (C) 2010-2013 Grazfather
  */
 #include <pokestructs.h>
  
@@ -26,11 +26,11 @@ void dumpbuf(unsigned char *buf, unsigned int size)
  *	Encrypts/decrypts the 48 byte data buffer based on the xored pv and otid values
  */
 unsigned short int encrypt(unsigned char *data, unsigned int pv, unsigned int otid) {
+	unsigned int i;
 	unsigned int xorkey = pv ^ otid;
 	unsigned short int checksum = 0;
-	unsigned char i;
 	
-	for (i = 0; i < DATA_LENGTH; i+=4)
+	for (i = DATA_LENGTH; i > 0 ; i-=4)
 	{
 		checksum += data[i+1]<<8 | data[i];
 		checksum += data[i+3]<<8 | data[i+2];
