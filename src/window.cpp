@@ -6,7 +6,7 @@ void Window::loadSave()
 {
 	int err;
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
-                    "./../..", tr("Savestates (*.*)") );
+						"./../..", tr("Savestates (*.*)") );
 
 	err = parser->load(fileName.toLocal8Bit().data());
 	if (err)
@@ -16,11 +16,12 @@ void Window::loadSave()
 	openFileName = fileName;
 
 	pokePersonalityEdit->setText(QString::number(parser->pokemon[0]->personality, 16).toUpper());
+	// TODO: Convert the nickname to ASCII
 	// pokeNameEdit->setText(QString::
 	pokeTrainerIDEdit->setText(QString::number(parser->pokemon[0]->otid, 16).toUpper());
 	// QLineEdit *pokeTrainerNameEdit;
 
-	pokeStatusEdit->setCurrentIndex(pokeStatusEdit->findData(QVariant(parser->pokemon[0]->status)));
+	pokeStatusEdit->setCurrentIndex(parser->pokemon[0]->status);
 	// QComboBox *pokeMarkEdit;
 	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(parser->pokemon_misc[0]->pokeball)));
 	// QComboBox *pokeLocationEdit;
@@ -86,36 +87,35 @@ void Window::save()
 	//Q_ASSERT(parser->pokemon[i]->otid == pokeTrainerIDEdit->text().toInt(NULL, 16));
 	//parser->pokemon[i]->otid = pokeTrainerIDEdit->text().toInt(NULL, 16);
 
-	Q_ASSERT(parser->pokemon[i]->status = pokeStatusEdit->currentIndex());
+	Q_ASSERT(parser->pokemon[i]->status == pokeStatusEdit->currentIndex());
 	parser->pokemon[i]->status = pokeStatusEdit->currentIndex();
 	// QComboBox *pokeMarkEdit;
-	Q_ASSERT(parser->pokemon_misc[i]->pokeball = pokePokeballEdit->currentIndex());
+	Q_ASSERT(parser->pokemon_misc[i]->pokeball == pokePokeballEdit->currentIndex());
 	parser->pokemon_misc[i]->pokeball = pokePokeballEdit->currentIndex();
 	// QComboBox *pokeLocationEdit;
 
-	qDebug() << parser->pokemon_growth[i]->held << " - " << pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt() << endl;
 	Q_ASSERT(parser->pokemon_growth[i]->held == pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt());
 	parser->pokemon_growth[i]->held = pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt();
 	Q_ASSERT(parser->pokemon_growth[i]->xp == pokeExperienceEdit->text().toInt());
 	parser->pokemon_growth[i]->xp = pokeExperienceEdit->text().toInt();
 	Q_ASSERT(parser->pokemon[i]->level == pokeLevelEdit->text().toInt());
 	parser->pokemon[i]->level = pokeLevelEdit->text().toInt();
-	Q_ASSERT(parser->pokemon_growth[i]->species == pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt());
+	//Q_ASSERT(parser->pokemon_growth[i]->species == pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt());
 	parser->pokemon_growth[i]->species = pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt();
 
-	Q_ASSERT(parser->pokemon_attacks[i]->atk1 == pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt());
+	//Q_ASSERT(parser->pokemon_attacks[i]->atk1 == pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk1 = pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt();
 	Q_ASSERT(parser->pokemon_attacks[i]->pp1 == pokePP1->value());
 	parser->pokemon_attacks[i]->pp1 = pokePP1->value();
-	Q_ASSERT(parser->pokemon_attacks[i]->atk2 == pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt());
+	//Q_ASSERT(parser->pokemon_attacks[i]->atk2 == pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk2 = pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt();
 	Q_ASSERT(parser->pokemon_attacks[i]->pp2 == pokePP2->value());
 	parser->pokemon_attacks[i]->pp2 = pokePP2->value();
-	Q_ASSERT(parser->pokemon_attacks[i]->atk3 == pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt());
+	//Q_ASSERT(parser->pokemon_attacks[i]->atk3 == pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk3 = pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt();
 	Q_ASSERT(parser->pokemon_attacks[i]->pp3 == pokePP3->value());
 	parser->pokemon_attacks[i]->pp3 = pokePP3->value();
-	Q_ASSERT(parser->pokemon_attacks[i]->atk4 == pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt());
+	//Q_ASSERT(parser->pokemon_attacks[i]->atk4 == pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk4 = pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt();
 	Q_ASSERT(parser->pokemon_attacks[i]->pp4 == pokePP4->value());
 	parser->pokemon_attacks[i]->pp4 = pokePP4->value();
@@ -133,7 +133,7 @@ void Window::save()
 	Q_ASSERT(parser->pokemon_effort[i]->spdef == pokeSpDefEV->value());
 	parser->pokemon_effort[i]->spdef = pokeSpDefEV->value();
 	// TODO: Assert total EVs are within limit
-
+/*
 	Q_ASSERT(parser->pokemon_misc[i]->hpiv == pokeHPIV->value());
 	parser->pokemon_misc[i]->hpiv = pokeHPIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->atkiv == pokeAtkIV->value());
@@ -146,8 +146,9 @@ void Window::save()
 	parser->pokemon_misc[i]->spatkiv = pokeSpAtkIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->spdefiv == pokeSpDefIV->value());
 	parser->pokemon_misc[i]->spdefiv = pokeSpDefIV->value();
-
-	// Save ramfile back to actual file
+parser->pokemon_misc[i]->egg = 0;
+parser->pokemon_misc[i]->ability = 0;*/
+	// Save ramfile back to disk
 	parser->save(openFileName.toLocal8Bit().data());
 }
 
@@ -166,26 +167,39 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	// Grab parser instance
 	parser = SaveParser::Instance();
 
-    // Basic layout manager
+	// Basic layout manager
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-	 QHBoxLayout* topLayout = new QHBoxLayout();
-	  QFormLayout* topLeftLayout = new QFormLayout();
-	  QFormLayout* topCentreLayout = new QFormLayout();
-	  QFormLayout* topRightLayout = new QFormLayout();
-	 QHBoxLayout* bottomLayout = new QHBoxLayout();
-	 
-    // Create menus
-    QMenu* file = new QMenu("&File");
-    file->addAction( "Load savestate",  this, SLOT(loadSave()), Qt::CTRL+Qt::Key_L );
-    file->addAction( "Save",  this, SLOT(save()), Qt::CTRL+Qt::Key_S );
+	QHBoxLayout* topLayout = new QHBoxLayout();
+	QFormLayout* topLeftLayout = new QFormLayout();
+	QFormLayout* topCentreLayout = new QFormLayout();
+	QFormLayout* topRightLayout = new QFormLayout();
+	QHBoxLayout* bottomLayout = new QHBoxLayout();
+	
+	// Create menus
+	QMenu* file = new QMenu("&File");
+	file->addAction( "Load savestate",  this, SLOT(loadSave()), Qt::CTRL+Qt::Key_L );
+	file->addAction( "Save",  this, SLOT(save()), Qt::CTRL+Qt::Key_S );
 	file->addAction( "Save As...",  this, SLOT(saveAs()), Qt::CTRL+Qt::ALT+Qt::Key_S );
-    file->addAction( "Exit",  this, SLOT(quit()), Qt::CTRL+Qt::Key_Q );
+	file->addAction( "Exit",  this, SLOT(quit()), Qt::CTRL+Qt::Key_Q );
 
-    QMenu* help = new QMenu("&Help");
-    help->addAction( "About", this, SLOT(About()), Qt::Key_F1 );
+	QMenu* help = new QMenu("&Help");
+	help->addAction( "About", this, SLOT(About()), Qt::Key_F1 );
 	
 	// Basic pokemon data
-	 // Left
+	// Left
+	pokeSpeciesEdit = new SpeciesComboBox();
+	pokeLevelEdit = new QLineEdit();
+	pokeLevelEdit->setValidator(new QIntValidator(this));
+	pokeHeldEdit = new ItemComboBox();
+	pokeExperienceEdit = new QLineEdit();
+	pokeExperienceEdit->setValidator(new QIntValidator(this));
+
+	topLeftLayout->addRow(tr("&Species:"), pokeSpeciesEdit);
+	topLeftLayout->addRow(tr("&Level:"), pokeLevelEdit);
+	topLeftLayout->addRow(tr("&Item Held:"), pokeHeldEdit);
+	topLeftLayout->addRow(tr("&Experience:"), pokeExperienceEdit);
+
+	// Centre
 	pokeNameEdit = new QLineEdit();
 	pokeNameEdit->setMaxLength(10);
 	pokeTrainerIDEdit = new QLineEdit();
@@ -195,37 +209,24 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokePersonalityEdit = new QLineEdit();
 	pokePersonalityEdit->setValidator(new QIntValidator(this));
 	
-	topLeftLayout->addRow(tr("&Nick Name:"), pokeNameEdit);
-	topLeftLayout->addRow(tr("Trainer &ID:"), pokeTrainerIDEdit);
-	topLeftLayout->addRow(tr("&Trainer Name:"), pokeTrainerNameEdit);
-	topLeftLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
+	topCentreLayout->addRow(tr("&Nick Name:"), pokeNameEdit);
+	topCentreLayout->addRow(tr("Trainer &ID:"), pokeTrainerIDEdit);
+	topCentreLayout->addRow(tr("&Trainer Name:"), pokeTrainerNameEdit);
+	topCentreLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
 	
-	 // Centre
+	// Right
 	pokeStatusEdit = new StatusComboBox();
 	pokeMarkEdit = new QComboBox();
 	pokePokeballEdit = new PokeballComboBox();
 	pokeLocationEdit = new QComboBox();
 
-	topCentreLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
-	topCentreLayout->addRow(tr("&Mark:"), pokeMarkEdit);
-	topCentreLayout->addRow(tr("&Pokeball:"), pokePokeballEdit);
-	topCentreLayout->addRow(tr("&Location:"), pokeLocationEdit);
+	topRightLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
+	topRightLayout->addRow(tr("&Mark:"), pokeMarkEdit);
+	topRightLayout->addRow(tr("&Pokeball:"), pokePokeballEdit);
+	topRightLayout->addRow(tr("&Location:"), pokeLocationEdit);
 	
-	 // Right
-	pokeHeldEdit = new ItemComboBox();
-	pokeExperienceEdit = new QLineEdit();
-	pokeExperienceEdit->setValidator(new QIntValidator(this));
-	pokeLevelEdit = new QLineEdit();
-	pokeLevelEdit->setValidator(new QIntValidator(this));
-	pokeSpeciesEdit = new SpeciesComboBox();
 
-	topRightLayout->addRow(tr("&Item Held:"), pokeHeldEdit);
-	topRightLayout->addRow(tr("&Experience:"), pokeExperienceEdit);
-	topRightLayout->addRow(tr("&Level:"), pokeLevelEdit);
-	topRightLayout->addRow(tr("&Species:"), pokeSpeciesEdit);
-	
 	// Pokemon Attacks
-	//QGridLayout *pokeAttackLayout = new QGridLayout();
 	QFormLayout *pokeAttackLayout = new QFormLayout();
 	pokeAtk1 = new AttackComboBox();
 	pokePP1 = new QSpinBox();
@@ -239,17 +240,6 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeAtk4 = new AttackComboBox();
 	pokePP4 = new QSpinBox();
 	pokePP4->setRange(0, 64);
-	
-	/*pokeAttackLayout->addWidget(new QLabel(tr("Attacks:")), 0, 0);
-	pokeAttackLayout->addWidget(pokeAtk1, 1, 0);
-	pokeAttackLayout->addWidget(pokePP1, 1, 1);
-	pokeAttackLayout->addWidget(pokeAtk2, 1, 2);
-	pokeAttackLayout->addWidget(pokePP2, 1, 3);
-	pokeAttackLayout->addWidget(pokeAtk3, 2, 0);
-	pokeAttackLayout->addWidget(pokePP3, 2, 1);
-	pokeAttackLayout->addWidget(pokeAtk4, 2, 2);
-	pokeAttackLayout->addWidget(pokePP4, 2, 3);	
-	*/
 	
 	pokeAttackLayout->addRow(new QLabel(tr("Attacks:")));
 	pokeAttackLayout->addRow(pokeAtk1, pokePP1);
@@ -336,17 +326,18 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	bottomLayout->addLayout(pokeMiscLayout);
 	
 	mainLayout->addLayout(topLayout);
-    mainLayout->addLayout(bottomLayout);
+	mainLayout->addLayout(bottomLayout);
 	
 	topLayout->addLayout(topLeftLayout);
 	topLayout->addLayout(topCentreLayout);
 	topLayout->addLayout(topRightLayout);
 	
-    // Create a menu bar
-    QMenuBar* menu = new QMenuBar( this );
-    menu->addSeparator();
-    menu->addMenu( file );
-    menu->addMenu( help );
+	// Create a menu bar
+	QMenuBar* menu = new QMenuBar( this );
+	menu->addSeparator();
+	menu->addMenu( file );
+	menu->addMenu( help );
+
 	mainLayout->setMenuBar( menu );
 	
 	setLayout(mainLayout);
