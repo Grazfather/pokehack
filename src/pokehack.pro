@@ -1,4 +1,3 @@
-SOURCES += gzstream.cpp
 SOURCES += main.cpp
 SOURCES += SaveParser.cpp
 SOURCES += window.cpp
