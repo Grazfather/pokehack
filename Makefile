@@ -1,6 +1,5 @@
 TARGET = pokehack.exe
-SRCS = pkg3.c
-OBJECTS = $(SRCS:.c=.o)
+OBJECTS = pkg3.o parsesav.o
 
 SRCDIR = src/
 
@@ -16,7 +15,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CXX) $(OBJECTS) -o $(TARGET)
 
-$(OBJECTS): $(SRCDIR)$(SRCS)
+%.o: $(SRCDIR)%.c
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:

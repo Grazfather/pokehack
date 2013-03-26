@@ -1,22 +1,42 @@
-#include <stdio.h>
-
 #ifndef POKEMON_STRUCTURES
 #define POKEMON_STRUCTURES
 
-#define STATE_SIZE 0xB49FE
+#define SAVEFILE_LEN (1 << 17)
+#define NUM_BLOCKS_SLOT 14
+#define NUM_BLOCKS_EXTRA 4
+#define NUM_BLOCKS_TOTAL 32
+#define BLOCK_DATA_LEN 3968
+#define BLOCK_PADDING_LEN 116
+#define BLOCK_FOOTER_LEN 12
+#define BLOCK_TOTAL_LEN (BLOCK_DATA_LEN + BLOCK_PADDING_LEN + BLOCK_FOOTER_LEN)
+#define SAVESLOT_LEN (14 * 3968)
+#define BELT_OFFSET_RSE 0x11B8
+#define BELT_OFFSET_FRLG 0xFB8
 
-// Either compile for each game, allow a choice, or detect automatically
-#define BELT_OFFSET 0x2C863 // Uncompressed save state for Pokemon FireRed
+#define NUM_POKEMON 6
+#define POKEMON_DATA_LENGTH 48
 
-#define NUM_POKEMON 6 // This will never change, but whatever.
-#define DATA_LENGTH 48
+typedef struct {
+	unsigned char blocknum;
+	unsigned char padding;
+	unsigned short checksum;
+	unsigned int validation; // 0x08012025
+	unsigned int savenumber;
+} block_footer;
+
+typedef struct {
+	unsigned char data[BLOCK_DATA_LEN];
+	unsigned char padding[BLOCK_PADDING_LEN];
+	block_footer footer;
+} block;
+
+unsigned short get_checksum( block* );
 
 typedef struct {
 	unsigned int personality;
 	unsigned int otid;
 	unsigned char name[10];
-	unsigned char font;
-	unsigned char sanity;
+	unsigned short language;
 	unsigned char otname[7];
 	unsigned char mark;
 	unsigned short int checksum;
@@ -24,7 +44,7 @@ typedef struct {
 	unsigned char data[48];
 	unsigned int status;
 	unsigned char level;
-	unsigned char x2; 				// unused
+	unsigned char pokerus;
 	unsigned short int currentHP;
 	unsigned short int maxHP;
 	unsigned short attack;
@@ -72,9 +92,10 @@ typedef struct
 
 typedef struct {
 	unsigned char pokerus;
-	unsigned char location;
-	signed char level;
-	unsigned char x:3;				// unused
+	unsigned char locationcaught;
+	signed char levelcaught:7;
+	unsigned char gamelsb:1;				// 'Game of Origin' lsb
+	unsigned char gamemsbs:3;				// 'Game of Origin' msbs
 	unsigned char pokeball:4;
 	unsigned char tgender:1;
 	unsigned int ability:1;
@@ -124,5 +145,8 @@ static const int DataOrderTable[24][4] = { \
 /* MAEG */ {1, 2, 3, 0}, \
 /* MEGA */ {3, 1, 2, 0}, \
 /* MEAG */ {2, 1, 3, 0} };
+
+unsigned short int encrypt( unsigned char *, unsigned int, unsigned int );
+char* parse_save( char*, char*, block *[NUM_BLOCKS_TOTAL]);
 
 #endif
