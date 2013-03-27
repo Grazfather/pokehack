@@ -21,7 +21,7 @@ typedef struct {
 	unsigned char padding;
 	unsigned short checksum;
 	unsigned int validation; // 0x08012025
-	unsigned int savenumber;
+	int savenumber;
 } block_footer;
 
 typedef struct {
