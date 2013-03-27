@@ -147,6 +147,6 @@ static const int DataOrderTable[24][4] = { \
 /* MEAG */ {2, 1, 3, 0} };
 
 unsigned short int encrypt( unsigned char *, unsigned int, unsigned int );
-char* parse_save( char*, char*, block *[NUM_BLOCKS_TOTAL]);
-
+char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
+int pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE_LEN]);
 #endif

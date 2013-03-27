@@ -47,16 +47,20 @@ int main(int argc, char * argv[])
 
 	// Check for the .sav file argument
 	if (argc < 3) {
-		fprintf(stderr, "syntax: pokeedit pokemonsavestate <game>\n");
+		fprintf(stderr, "syntax: pokeedit pokemonsave [outfile] <game>\n");
 		fprintf(stderr, "0 for Emerald/Ruby/Sapphire. 1 for FireRed/LeafGreen\n");
-		fprintf(stderr, "example: pokeedit PokemonFireRed.sav 1\n");
+		fprintf(stderr, "example: pokeedit PokemonFireRed.sav NewPokemonFireRed.sav 1\n");
 
 		return -1;
 	}
 
-	game = atoi(argv[2]);
+	if (argc > 3) // Supplied a file to write to
+		game = atoi(argv[3]);
+	else
+		game = atoi(argv[2]);
 	if (( game < 0) || ( game > 1)) {
 		fprintf(stderr, "Game can only be 1 or 0\n");
+		return -1;
 	}
 
 	unpackeddata = parse_save(argv[1], savefile, blocks);
@@ -89,43 +93,26 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pokemon_effort[i]->hp, pokemon_effort[i]->attack, pokemon_effort[i]->defense, pokemon_effort[i]->spatk, pokemon_effort[i]->spdef, pokemon_effort[i]->speed );
 	}
 
-	/*
+	// Make our edits here
+
+	// Done edits
+
 	// Re encrypt and set checksum
 	for(i = 0; i < NUM_POKEMON; i++)
 	{
 		pokemon[i]->checksum = encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
 	}
 
-	// Re-split into blocks and place over buffer
-	// pack_save(...)
-
-	for(i = 0; i < NUM_BLOCKS_TOTAL; i++)
-	{
-		if (blocks[i]->footer.savenumber == newestSave) {
-			memcpy(blocks[i]->data, unpackeddata + BLOCK_DATA_LEN * blocks[i]->footer.blocknum, BLOCK_DATA_LEN);
-			// Re-calculate and set this blocks checksum
-			blocks[i]->footer.checksum = get_checksum(blocks[i]);
-			tempCount++;
+	if (argc > 3) {
+		if (pack_save(argv[2], unpackeddata, blocks, savefile)) {
+			fprintf(stderr, "Could not save changes!\n");
+			return -1;
+		} else {
+			fprintf(stderr, "Saved!\n");
 		}
+	} else {
+		free(unpackeddata);
 	}
 
-	// Save back into argv[2]
-	if (argc == 3) {
-		if ((f = fopen(argv[2], "wb")) == NULL) {
-			printf("ERROR: Unable to open %s for writing.\n", argv[1]);
-
-			return -1;
-		}
-
-		if (fwrite(savefile, SAVESLOT_LEN, 1, f) != 1) {
-			printf("ERROR: Unable to write to file.\n");
-			fclose(f);
-
-			return -1;
-		}
-		fclose(f);
-	}
-
-	*/
 	return 0;
 }
