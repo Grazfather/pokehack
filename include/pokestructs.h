@@ -12,8 +12,12 @@
 #define SAVESLOT_LEN (14 * 3968)
 #define BELT_OFFSET_RSE 0x11B8
 #define BELT_OFFSET_FRLG 0xFB8
+#define BOX_OFFSET 0x4D84
 
-#define NUM_POKEMON 6
+#define NUM_BELT_POKEMON 6
+#define NUM_BOXES 14
+#define NUM_POKEMON_PER_BOX 30
+#define NUM_BOX_POKEMON (NUM_BOXES * NUM_POKEMON_PER_BOX)
 #define POKEMON_DATA_LENGTH 48
 
 typedef struct {
@@ -40,8 +44,8 @@ typedef struct {
 	unsigned char otname[7];
 	unsigned char mark;
 	unsigned short int checksum;
-	unsigned short int x1; 				// unused
-	unsigned char data[48];
+	unsigned short int x1;				// unused
+	unsigned char data[POKEMON_DATA_LENGTH];
 	unsigned int status;
 	unsigned char level;
 	unsigned char pokerus;
@@ -52,7 +56,19 @@ typedef struct {
 	unsigned short speed;
 	unsigned short spatk;
 	unsigned short spdef;
-} pokemon_t;
+} belt_pokemon_t;
+
+typedef struct {
+	unsigned int personality;
+	unsigned int otid;
+	unsigned char name[10];
+	unsigned short language;
+	unsigned char otname[7];
+	unsigned char mark;
+	unsigned short int checksum;
+	unsigned short int x1;				// unused
+	unsigned char data[POKEMON_DATA_LENGTH];
+} box_pokemon_t;
 
 typedef struct{
 	unsigned short int species;
@@ -60,7 +76,7 @@ typedef struct{
 	unsigned int xp;
 	unsigned char ppbonuses;
 	unsigned char happiness;
-	unsigned char x; 				// unused
+	unsigned char x;				// unused
 } pokemon_growth_t ;
 
 typedef struct {

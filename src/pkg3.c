@@ -8,11 +8,20 @@
 #include <pokestructs.h>
 
 // Global variables
-pokemon_t *pokemon[NUM_POKEMON];
-pokemon_attacks_t *pokemon_attacks[NUM_POKEMON];
-pokemon_effort_t *pokemon_effort[NUM_POKEMON];
-pokemon_growth_t *pokemon_growth[NUM_POKEMON];
-pokemon_misc_t *pokemon_misc[NUM_POKEMON];
+
+// Pokemon in belt
+belt_pokemon_t *belt_pokemon[NUM_BELT_POKEMON];
+pokemon_attacks_t *belt_pokemon_attacks[NUM_BELT_POKEMON];
+pokemon_effort_t *belt_pokemon_effort[NUM_BELT_POKEMON];
+pokemon_growth_t *belt_pokemon_growth[NUM_BELT_POKEMON];
+pokemon_misc_t *belt_pokemon_misc[NUM_BELT_POKEMON];
+
+// Pokemon in PC
+box_pokemon_t *box_pokemon[NUM_BOX_POKEMON];
+pokemon_attacks_t *box_pokemon_attacks[NUM_BOX_POKEMON];
+pokemon_effort_t *box_pokemon_effort[NUM_BOX_POKEMON];
+pokemon_growth_t *box_pokemon_growth[NUM_BOX_POKEMON];
+pokemon_misc_t *box_pokemon_misc[NUM_BOX_POKEMON];
 
 int offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
 
@@ -70,27 +79,49 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
-	for(i = 0; i < NUM_POKEMON; i++)
+	// Parse pokemon in belt
+	for(i = 0; i < NUM_BELT_POKEMON; i++)
 	{
 		int o;
 
 		// Read data on pokemon
-		pokemon[i] = (pokemon_t *)(unpackeddata + offsets[game] + (i * sizeof(pokemon_t)));
+		belt_pokemon[i] = (belt_pokemon_t *)(unpackeddata + offsets[game] + (i * sizeof(belt_pokemon_t)));
 
 		// Unencrypt pokemon's data
-		encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
+		encrypt(belt_pokemon[i]->data, belt_pokemon[i]->personality, belt_pokemon[i]->otid);
 
 		// Figure out the order
-		o = pokemon[i]->personality % 24;
-		pokemon_attacks[i] = (pokemon_attacks_t *)(pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
-		pokemon_effort[i] = (pokemon_effort_t *)(pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
-		pokemon_growth[i] = (pokemon_growth_t *)(pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
-		pokemon_misc[i] = (pokemon_misc_t *)(pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
-		fprintf(stderr, "\nPokemon %d: hp %d/%d\n", i, pokemon[i]->currentHP, pokemon[i]->maxHP);
-		fprintf(stderr, "Species %d, held: %d, experience: %d, ppb: %d, friendship: %d\n", pokemon_growth[i]->species, pokemon_growth[i]->held, pokemon_growth[i]->xp, pokemon_growth[i]->ppbonuses, pokemon_growth[i]->happiness);
-		fprintf(stderr, "Attacks: 1:%d, 2:%d, 3:%d, 4:%d, pp1:%d, pp2:%d, pp3:%d, pp4:%d\n", pokemon_attacks[i]->atk1, pokemon_attacks[i]->atk2, pokemon_attacks[i]->atk3, pokemon_attacks[i]->atk4, pokemon_attacks[i]->pp1, pokemon_attacks[i]->pp2, pokemon_attacks[i]->pp3, pokemon_attacks[i]->pp4 );
-		fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pokemon_misc[i]->hpiv, pokemon_misc[i]->atkiv, pokemon_misc[i]->defiv, pokemon_misc[i]->spatkiv, pokemon_misc[i]->spdefiv, pokemon_misc[i]->spdiv );
-		fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pokemon_effort[i]->hp, pokemon_effort[i]->attack, pokemon_effort[i]->defense, pokemon_effort[i]->spatk, pokemon_effort[i]->spdef, pokemon_effort[i]->speed );
+		o = belt_pokemon[i]->personality % 24;
+		belt_pokemon_attacks[i] = (pokemon_attacks_t *)(belt_pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
+		belt_pokemon_effort[i] = (pokemon_effort_t *)(belt_pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
+		belt_pokemon_growth[i] = (pokemon_growth_t *)(belt_pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
+		belt_pokemon_misc[i] = (pokemon_misc_t *)(belt_pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
+		fprintf(stderr, "\nPokemon %d: hp %d/%d\n", i, belt_pokemon[i]->currentHP, belt_pokemon[i]->maxHP);
+		fprintf(stderr, "Species %d, held: %d, experience: %d, ppb: %d, friendship: %d\n", belt_pokemon_growth[i]->species, belt_pokemon_growth[i]->held, belt_pokemon_growth[i]->xp, belt_pokemon_growth[i]->ppbonuses, belt_pokemon_growth[i]->happiness);
+		fprintf(stderr, "Attacks: 1:%d, 2:%d, 3:%d, 4:%d, pp1:%d, pp2:%d, pp3:%d, pp4:%d\n", belt_pokemon_attacks[i]->atk1, belt_pokemon_attacks[i]->atk2, belt_pokemon_attacks[i]->atk3, belt_pokemon_attacks[i]->atk4, belt_pokemon_attacks[i]->pp1, belt_pokemon_attacks[i]->pp2, belt_pokemon_attacks[i]->pp3, belt_pokemon_attacks[i]->pp4 );
+		fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", belt_pokemon_misc[i]->hpiv, belt_pokemon_misc[i]->atkiv, belt_pokemon_misc[i]->defiv, belt_pokemon_misc[i]->spatkiv, belt_pokemon_misc[i]->spdefiv, belt_pokemon_misc[i]->spdiv );
+		fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", belt_pokemon_effort[i]->hp, belt_pokemon_effort[i]->attack, belt_pokemon_effort[i]->defense, belt_pokemon_effort[i]->spatk, belt_pokemon_effort[i]->spdef, belt_pokemon_effort[i]->speed );
+	}
+
+	// Parse pokemon in PC
+	for(i = 0; i < NUM_BOX_POKEMON; i++)
+	{
+		int o;
+
+		// Read data on pokemon
+		box_pokemon[i] = (box_pokemon_t *)(unpackeddata + BOX_OFFSET + (i * sizeof(box_pokemon_t)));
+
+		// Unencrypt pokemon's data
+		encrypt(box_pokemon[i]->data, box_pokemon[i]->personality, box_pokemon[i]->otid);
+
+		// Figure out the order
+		o = box_pokemon[i]->personality % 24;
+		box_pokemon_attacks[i] = (pokemon_attacks_t *)(box_pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
+		box_pokemon_effort[i] = (pokemon_effort_t *)(box_pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
+		box_pokemon_growth[i] = (pokemon_growth_t *)(box_pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
+		box_pokemon_misc[i] = (pokemon_misc_t *)(box_pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
+		if (box_pokemon_growth[i]->species)
+			fprintf(stderr, "Pokemon %d: species:%d\n", i, box_pokemon_growth[i]->species);
 	}
 
 	// Make our edits here
@@ -98,9 +129,14 @@ int main(int argc, char * argv[])
 	// Done edits
 
 	// Re encrypt and set checksum
-	for(i = 0; i < NUM_POKEMON; i++)
+	for(i = 0; i < NUM_BELT_POKEMON; i++)
 	{
-		pokemon[i]->checksum = encrypt(pokemon[i]->data, pokemon[i]->personality, pokemon[i]->otid);
+		belt_pokemon[i]->checksum = encrypt(belt_pokemon[i]->data, belt_pokemon[i]->personality, belt_pokemon[i]->otid);
+	}
+
+	for(i = 0; i < NUM_BOX_POKEMON; i++)
+	{
+		box_pokemon[i]->checksum = encrypt(box_pokemon[i]->data, box_pokemon[i]->personality, box_pokemon[i]->otid);
 	}
 
 	if (argc > 3) {
