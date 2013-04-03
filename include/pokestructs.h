@@ -165,4 +165,6 @@ static const int DataOrderTable[24][4] = { \
 unsigned short int encrypt( unsigned char *, unsigned int, unsigned int );
 char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
 int pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE_LEN]);
+int parse_pokemon(char*, int, void** pokemon, pokemon_attacks_t**, pokemon_effort_t**, pokemon_growth_t**, pokemon_misc_t**, int, int);
+void print_pokemon(box_pokemon_t* pokemon);
 #endif

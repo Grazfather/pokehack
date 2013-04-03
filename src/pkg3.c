@@ -23,7 +23,7 @@ pokemon_effort_t *box_pokemon_effort[NUM_BOX_POKEMON];
 pokemon_growth_t *box_pokemon_growth[NUM_BOX_POKEMON];
 pokemon_misc_t *box_pokemon_misc[NUM_BOX_POKEMON];
 
-int offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
+int belt_offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
 
 /*
  *	Encrypts/decrypts the 48 byte data buffer based on the xored pv and otid values
@@ -45,6 +45,63 @@ unsigned short int encrypt(unsigned char *data, unsigned int pv, unsigned int ot
 	}
 
 	return checksum;
+}
+
+int parse_pokemon(char* buf, int offset, void** pokemon, pokemon_attacks_t** pa, pokemon_effort_t** pe, pokemon_growth_t** pg, pokemon_misc_t** pm, int num, int size)
+{
+	int i;
+	if (size != sizeof(belt_pokemon_t) && size != sizeof(box_pokemon_t)) {
+		fprintf(stderr, "Pokemon size must be either 80 or 100 bytes\n");
+		return -1;
+	}
+
+	// Parse pokemon
+	for(i = 0; i < num; i++)
+	{
+		int o;
+
+		// Read data on pokemon
+		pokemon[i] = (buf + offset + (i * size));
+
+		// Unencrypt pokemon's data
+		// box and belt pokemon have these struct members all at
+		// the same offset so we can cast to either type
+		encrypt(((box_pokemon_t*)pokemon[i])->data, ((box_pokemon_t*)pokemon[i])->personality, ((box_pokemon_t*)pokemon[i])->otid);
+
+		// Figure out the order
+		o = ((box_pokemon_t*)pokemon[i])->personality % 24;
+		pa[i] = (pokemon_attacks_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][0] * sizeof(pokemon_attacks_t));
+		pe[i] = (pokemon_effort_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][1] * sizeof(pokemon_effort_t));
+		pg[i] = (pokemon_growth_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
+		pm[i] = (pokemon_misc_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][3] * sizeof(pokemon_misc_t));
+		if (pg[i]->species) {
+			fprintf(stderr, "\nPokemon %d\n", i);
+			print_pokemon(pokemon[i]);
+		}
+	}
+
+	return 0;
+}
+
+void print_pokemon(box_pokemon_t* pokemon)
+{
+	pokemon_attacks_t *pa;
+	pokemon_effort_t *pe;
+	pokemon_growth_t *pg;
+	pokemon_misc_t *pm;
+	int o;
+
+	// Figure out the order
+	o = pokemon->personality % 24;
+	pa = (pokemon_attacks_t *)(pokemon->data + DataOrderTable[o][0] * sizeof(pokemon_attacks_t));
+	pe = (pokemon_effort_t *)(pokemon->data + DataOrderTable[o][1] * sizeof(pokemon_effort_t));
+	pg = (pokemon_growth_t *)(pokemon->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
+	pm = (pokemon_misc_t *)(pokemon->data + DataOrderTable[o][3] * sizeof(pokemon_misc_t));
+
+	fprintf(stderr, "Species %d, held: %d, experience: %d, ppb: %d, friendship: %d\n", pg->species, pg->held, pg->xp, pg->ppbonuses, pg->happiness);
+	fprintf(stderr, "Attacks: 1:%d, 2:%d, 3:%d, 4:%d, pp1:%d, pp2:%d, pp3:%d, pp4:%d\n", pa->atk1, pa->atk2, pa->atk3, pa->atk4, pa->pp1, pa->pp2, pa->pp3, pa->pp4 );
+	fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pm->hpiv, pm->atkiv, pm->defiv, pm->spatkiv, pm->spdefiv, pm->spdiv );
+	fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pe->hp, pe->attack, pe->defense, pe->spatk, pe->spdef, pe->speed );
 }
 
 int main(int argc, char * argv[])
@@ -79,50 +136,8 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
-	// Parse pokemon in belt
-	for(i = 0; i < NUM_BELT_POKEMON; i++)
-	{
-		int o;
-
-		// Read data on pokemon
-		belt_pokemon[i] = (belt_pokemon_t *)(unpackeddata + offsets[game] + (i * sizeof(belt_pokemon_t)));
-
-		// Unencrypt pokemon's data
-		encrypt(belt_pokemon[i]->data, belt_pokemon[i]->personality, belt_pokemon[i]->otid);
-
-		// Figure out the order
-		o = belt_pokemon[i]->personality % 24;
-		belt_pokemon_attacks[i] = (pokemon_attacks_t *)(belt_pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
-		belt_pokemon_effort[i] = (pokemon_effort_t *)(belt_pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
-		belt_pokemon_growth[i] = (pokemon_growth_t *)(belt_pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
-		belt_pokemon_misc[i] = (pokemon_misc_t *)(belt_pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
-		fprintf(stderr, "\nPokemon %d: hp %d/%d\n", i, belt_pokemon[i]->currentHP, belt_pokemon[i]->maxHP);
-		fprintf(stderr, "Species %d, held: %d, experience: %d, ppb: %d, friendship: %d\n", belt_pokemon_growth[i]->species, belt_pokemon_growth[i]->held, belt_pokemon_growth[i]->xp, belt_pokemon_growth[i]->ppbonuses, belt_pokemon_growth[i]->happiness);
-		fprintf(stderr, "Attacks: 1:%d, 2:%d, 3:%d, 4:%d, pp1:%d, pp2:%d, pp3:%d, pp4:%d\n", belt_pokemon_attacks[i]->atk1, belt_pokemon_attacks[i]->atk2, belt_pokemon_attacks[i]->atk3, belt_pokemon_attacks[i]->atk4, belt_pokemon_attacks[i]->pp1, belt_pokemon_attacks[i]->pp2, belt_pokemon_attacks[i]->pp3, belt_pokemon_attacks[i]->pp4 );
-		fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", belt_pokemon_misc[i]->hpiv, belt_pokemon_misc[i]->atkiv, belt_pokemon_misc[i]->defiv, belt_pokemon_misc[i]->spatkiv, belt_pokemon_misc[i]->spdefiv, belt_pokemon_misc[i]->spdiv );
-		fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", belt_pokemon_effort[i]->hp, belt_pokemon_effort[i]->attack, belt_pokemon_effort[i]->defense, belt_pokemon_effort[i]->spatk, belt_pokemon_effort[i]->spdef, belt_pokemon_effort[i]->speed );
-	}
-
-	// Parse pokemon in PC
-	for(i = 0; i < NUM_BOX_POKEMON; i++)
-	{
-		int o;
-
-		// Read data on pokemon
-		box_pokemon[i] = (box_pokemon_t *)(unpackeddata + BOX_OFFSET + (i * sizeof(box_pokemon_t)));
-
-		// Unencrypt pokemon's data
-		encrypt(box_pokemon[i]->data, box_pokemon[i]->personality, box_pokemon[i]->otid);
-
-		// Figure out the order
-		o = box_pokemon[i]->personality % 24;
-		box_pokemon_attacks[i] = (pokemon_attacks_t *)(box_pokemon[i]->data + DataOrderTable[o][0] * sizeof(pokemon_growth_t));
-		box_pokemon_effort[i] = (pokemon_effort_t *)(box_pokemon[i]->data + DataOrderTable[o][1] * sizeof(pokemon_growth_t));
-		box_pokemon_growth[i] = (pokemon_growth_t *)(box_pokemon[i]->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
-		box_pokemon_misc[i] = (pokemon_misc_t *)(box_pokemon[i]->data + DataOrderTable[o][3] * sizeof(pokemon_growth_t));
-		if (box_pokemon_growth[i]->species)
-			fprintf(stderr, "Pokemon %d: species:%d\n", i, box_pokemon_growth[i]->species);
-	}
+	parse_pokemon(unpackeddata, belt_offsets[game], (void**)belt_pokemon, belt_pokemon_attacks, belt_pokemon_effort, belt_pokemon_growth, belt_pokemon_misc, NUM_BELT_POKEMON, sizeof(belt_pokemon_t));
+	parse_pokemon(unpackeddata, BOX_OFFSET, (void**)box_pokemon, box_pokemon_attacks, box_pokemon_effort, box_pokemon_growth, box_pokemon_misc, NUM_BOX_POKEMON, sizeof(box_pokemon_t));
 
 	// Make our edits here
 
