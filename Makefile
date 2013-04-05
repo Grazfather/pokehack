@@ -1,5 +1,5 @@
 TARGET = pokehack.exe
-OBJECTS = pkg3.o parsesav.o pokemon_species.o items.o misc.o
+OBJECTS = pkg3.o parsesav.o pokemon_species.o items.o misc.o attacks.o
 
 SRCDIR = src/
 

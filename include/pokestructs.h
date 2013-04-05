@@ -37,7 +37,7 @@ typedef struct {
 unsigned short get_checksum( block* );
 
 typedef struct {
-	unsigned int personality;
+	const unsigned int personality;
 	unsigned int otid;
 	unsigned char name[10];
 	unsigned short language;
@@ -114,14 +114,19 @@ typedef struct {
 	unsigned char gamemsbs:3;				// 'Game of Origin' msbs
 	unsigned char pokeball:4;
 	unsigned char tgender:1;
-	unsigned int ability:1;
-	unsigned int egg:1;
-	unsigned int spdefiv:5;
-	unsigned int spatkiv:5;
-	unsigned int spdiv:5;
-	unsigned int defiv:5;
-	unsigned int atkiv:5;
-	unsigned int hpiv:5;
+	union {
+		struct {
+			unsigned int hp:5;
+			unsigned int atk:5;
+			unsigned int def:5;
+			unsigned int spd:5;
+			unsigned int spatk:5;
+			unsigned int spdef:5;
+			unsigned int egg:1;
+			unsigned int ability:1;
+		} IVs;
+		unsigned int IVint;
+	};
 	unsigned int ribbons;
 } pokemon_misc_t;
 
