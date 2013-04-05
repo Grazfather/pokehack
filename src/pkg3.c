@@ -8,6 +8,8 @@
 #include <pokestructs.h>
 
 // Global variables
+extern char* pokemon_species[];
+extern char* items[];
 
 // Pokemon in belt
 belt_pokemon_t *belt_pokemon[NUM_BELT_POKEMON];
@@ -90,6 +92,7 @@ void print_pokemon(box_pokemon_t* pokemon)
 	pokemon_growth_t *pg;
 	pokemon_misc_t *pm;
 	int o;
+	int totalIVs;
 
 	// Figure out the order
 	o = pokemon->personality % 24;
@@ -98,9 +101,10 @@ void print_pokemon(box_pokemon_t* pokemon)
 	pg = (pokemon_growth_t *)(pokemon->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
 	pm = (pokemon_misc_t *)(pokemon->data + DataOrderTable[o][3] * sizeof(pokemon_misc_t));
 
-	fprintf(stderr, "Species %d, held: %d, experience: %d, ppb: %d, friendship: %d\n", pg->species, pg->held, pg->xp, pg->ppbonuses, pg->happiness);
+	totalIVs = pm->hpiv + pm->atkiv + pm->defiv + pm->spatkiv + pm->spdefiv + pm->spdiv;
+	fprintf(stderr, "Species %d: %s, held %d: %s, experience: %d, ppb: %d, friendship: %d\n", pg->species, pokemon_species[pg->species], pg->held, items[pg->held], pg->xp, pg->ppbonuses, pg->happiness);
 	fprintf(stderr, "Attacks: 1:%d, 2:%d, 3:%d, 4:%d, pp1:%d, pp2:%d, pp3:%d, pp4:%d\n", pa->atk1, pa->atk2, pa->atk3, pa->atk4, pa->pp1, pa->pp2, pa->pp3, pa->pp4 );
-	fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pm->hpiv, pm->atkiv, pm->defiv, pm->spatkiv, pm->spdefiv, pm->spdiv );
+	fprintf(stderr, "IVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d, Total:%d \n", pm->hpiv, pm->atkiv, pm->defiv, pm->spatkiv, pm->spdefiv, pm->spdiv, totalIVs );
 	fprintf(stderr, "EVs: hp:%d, atk:%d, def:%d, spatk:%d, spdef:%d, spd:%d\n", pe->hp, pe->attack, pe->defense, pe->spatk, pe->spdef, pe->speed );
 }
 
