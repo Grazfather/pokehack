@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <pokestructs.h>
 
-unsigned short int get_checksum(block* b)
+static unsigned short int get_block_checksum(block* b)
 {
 	int checksum = 0;
 	int i;
@@ -89,7 +89,7 @@ int pack_save(char *filename, char *unpackeddata, block *blocks[NUM_BLOCKS_TOTAL
 		if (blocks[i]->footer.savenumber == newestSave) {
 			memcpy(blocks[i]->data, unpackeddata + BLOCK_DATA_LEN * blocks[i]->footer.blocknum, BLOCK_DATA_LEN);
 			// Re-calculate and set this block's checksum
-			blocks[i]->footer.checksum = get_checksum(blocks[i]);
+			blocks[i]->footer.checksum = get_block_checksum(blocks[i]);
 			tempCount++;
 		}
 	}
