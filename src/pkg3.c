@@ -27,8 +27,6 @@ pokemon_effort_t *box_pokemon_effort[NUM_BOX_POKEMON];
 pokemon_growth_t *box_pokemon_growth[NUM_BOX_POKEMON];
 pokemon_misc_t *box_pokemon_misc[NUM_BOX_POKEMON];
 
-int belt_offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
-
 /*
  *	Encrypts/decrypts the 48 byte data buffer based on the xored pv and otid values
  */

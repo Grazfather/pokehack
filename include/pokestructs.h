@@ -138,7 +138,6 @@ typedef struct {
 	04. GMAE	 10. AMGE	 16. EMGA	 22. MEGA
 	05. GMEA	 11. AMEG	 17. EMAG	 23. MEAG
 */
-
 // Where in data each struct is, based on AEGM order
 static const int DataOrderTable[24][4] = { \
 /*          A  E  G  M */ \
@@ -166,6 +165,8 @@ static const int DataOrderTable[24][4] = { \
 /* MAEG */ {1, 2, 3, 0}, \
 /* MEGA */ {3, 1, 2, 0}, \
 /* MEAG */ {2, 1, 3, 0} };
+
+static const int belt_offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
 
 unsigned short int encrypt( unsigned char *, unsigned int, unsigned int );
 char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
