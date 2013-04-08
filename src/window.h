@@ -28,36 +28,36 @@
 
 class Window : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-        Window( QWidget* parent = 0);
+	public:
+		Window( QWidget* parent = 0 );
 
-    signals:
-        // Define any signals necessary
+	signals:
+		// Define any signals necessary
 
-    public slots:
-        // Define any slots
+	public slots:
+		// Define any slots
 		void loadSave();
 		void save();
 		void saveAs();
 		void quit();
 		void updateTotalEVs();
 		void updateTotalIVs();
-    
-    private:
-        // Declare all widgets that will need to be accessed outside of the
-        // constructor (for example, if you need to get the value of a slider)
-		
+
+	private:
+		// Declare all widgets that will need to be accessed outside of the
+		// constructor (for example, if you need to get the value of a slider)
+
 		QString openFileName;
 		SaveParser *parser;
-		
-		
+
+
 		QLineEdit *pokePersonalityEdit;
 		QLineEdit *pokeNameEdit;
 		QLineEdit *pokeTrainerIDEdit;
 		QLineEdit *pokeTrainerNameEdit;
-		
+
 		StatusComboBox *pokeStatusEdit;
 		QComboBox *pokeMarkEdit;
 		PokeballComboBox *pokePokeballEdit;
@@ -68,7 +68,7 @@ class Window : public QWidget
 		QLineEdit *pokeLevelEdit;
 		SpeciesComboBox *pokeSpeciesEdit;
 		GameComboBox *gameEdit;
-		
+
 		AttackComboBox *pokeAtk1;
 		QSpinBox *pokePP1;
 		AttackComboBox *pokeAtk2;
@@ -77,7 +77,7 @@ class Window : public QWidget
 		QSpinBox *pokePP3;
 		AttackComboBox *pokeAtk4;
 		QSpinBox *pokePP4;
-		
+
 		QSpinBox *pokeHPEV;
 		QSpinBox *pokeAtkEV;
 		QSpinBox *pokeDefEV;
@@ -85,7 +85,7 @@ class Window : public QWidget
 		QSpinBox *pokeSpAtkEV;
 		QSpinBox *pokeSpDefEV;
 		QLabel *pokeTotalEVs;
-		
+
 		QSpinBox *pokeHPIV;
 		QSpinBox *pokeAtkIV;
 		QSpinBox *pokeDefIV;

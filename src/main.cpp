@@ -10,13 +10,13 @@
 // Main program to start up gui app
 int main( int argc, char **argv )
 {
-    QApplication::setColorSpec( QApplication::CustomColor );
-    QApplication app(argc,argv);			
+	QApplication::setColorSpec( QApplication::CustomColor );
+	QApplication app(argc,argv);
 
-    Window w;
-    w.resize(WIN_W, WIN_H);
+	Window w;
+	w.resize(WIN_W, WIN_H);
 
-    w.show();
+	w.show();
 
-    return app.exec();
+	return app.exec();
 }

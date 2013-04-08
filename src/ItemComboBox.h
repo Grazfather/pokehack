@@ -6,20 +6,20 @@
 
 class ItemComboBox : public QComboBox
 {
-    Q_OBJECT
+	Q_OBJECT
 
-    public:
-       ItemComboBox( QWidget* parent = 0);
+	public:
+		ItemComboBox( QWidget* parent = 0);
 
-    signals:
-        // Define any signals necessary
+	signals:
+		// Define any signals necessary
 
-    public slots:
-        // Define any slots
-    
-    private:
-        // Declare all widgets that will need to be accessed outside of the
-        // constructor (for example, if you need to get the value of a slider)
+	public slots:
+		// Define any slots
+
+	private:
+		// Declare all widgets that will need to be accessed outside of the
+		// constructor (for example, if you need to get the value of a slider)
 };
 
 #endif

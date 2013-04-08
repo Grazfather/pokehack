@@ -20,4 +20,3 @@ PokeballComboBox::PokeballComboBox( QWidget* parent ) : QComboBox( parent )
 	addItem(tr("Poke Ball?"), QVariant( 14 ));
 	addItem(tr("Poke Ball?"), QVariant( 15 ));
 };
-                                                        

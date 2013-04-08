@@ -10,4 +10,3 @@ AttackComboBox::AttackComboBox( QWidget* parent ) : QComboBox( parent )
 		addItem(tr(attacks[i]), QVariant( i ));
 	}
 };
-                                                        

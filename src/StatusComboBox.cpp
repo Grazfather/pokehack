@@ -17,4 +17,3 @@ StatusComboBox::StatusComboBox( QWidget* parent ) : QComboBox( parent )
 	addItem(tr("Paralysis"), QVariant( 64 ));
 	addItem(tr("Bad Poison"), QVariant( 128 ));
 };
-                                                        
