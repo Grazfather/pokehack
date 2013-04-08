@@ -20,6 +20,10 @@
 #define NUM_BOX_POKEMON (NUM_BOXES * NUM_POKEMON_PER_BOX)
 #define POKEMON_DATA_LENGTH 48
 
+#define NUM_POKEMON_SPECIES 440
+#define NUM_ITEMS 377
+#define NUM_ATTACKS 355
+
 typedef struct {
 	unsigned char blocknum;
 	unsigned char padding;

@@ -7,6 +7,11 @@ SOURCES += SpeciesComboBox.cpp
 SOURCES += PokeballComboBox.cpp
 SOURCES += StatusComboBox.cpp
 SOURCES += GameComboBox.cpp
+SOURCES += pokemon_species.c
+SOURCES += items.c
+SOURCES += misc.c
+SOURCES += attacks.c
+
 
 HEADERS += window.h
 HEADERS += ../include/pokestructs.h
