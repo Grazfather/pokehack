@@ -15,46 +15,63 @@ void Window::loadSave()
 	}
 	openFileName = fileName;
 
-	pokePersonalityEdit->setText(QString::number(parser->pokemon[0]->personality, 16).toUpper());
+	currentPokemon = 0;
+	switchPokemonSpinBox->setValue(0);
+	loadPokemon(parser->pokemon[currentPokemon], parser->pokemon_attacks[currentPokemon],
+				parser->pokemon_effort[currentPokemon], parser->pokemon_misc[currentPokemon],
+				parser->pokemon_growth[currentPokemon]);
+}
+
+void Window::switchPokemon()
+{
+	currentPokemon = switchPokemonSpinBox->value();
+	loadPokemon(parser->pokemon[currentPokemon], parser->pokemon_attacks[currentPokemon],
+				parser->pokemon_effort[currentPokemon], parser->pokemon_misc[currentPokemon],
+				parser->pokemon_growth[currentPokemon]);
+}
+
+void Window::loadPokemon(belt_pokemon_t* pokemon, pokemon_attacks_t* pa, pokemon_effort_t* pe, pokemon_misc_t* pm, pokemon_growth_t* pg)
+{
+	pokePersonalityEdit->setText(QString::number(pokemon->personality, 16).toUpper());
 	// TODO: Convert the nickname to ASCII
 	// pokeNameEdit->setText(QString::
-	pokeTrainerIDEdit->setText(QString::number(parser->pokemon[0]->otid, 16).toUpper());
+	pokeTrainerIDEdit->setText(QString::number(pokemon->otid, 16).toUpper());
 	// QLineEdit *pokeTrainerNameEdit;
 
-	pokeStatusEdit->setCurrentIndex(parser->pokemon[0]->status);
+	pokeStatusEdit->setCurrentIndex(pokemon->status);
 	// QComboBox *pokeMarkEdit;
-	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(parser->pokemon_misc[0]->pokeball)));
+	pokePokeballEdit->setCurrentIndex(pokePokeballEdit->findData(QVariant(pm->pokeball)));
 	// QComboBox *pokeLocationEdit;
 
-	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(parser->pokemon_growth[0]->held)));
-	pokeExperienceEdit->setText(QString::number(parser->pokemon_growth[0]->xp));
-	pokeLevelEdit->setText(QString::number(parser->pokemon[0]->level));
-	pokeSpeciesEdit->setCurrentIndex(pokeSpeciesEdit->findData(QVariant(parser->pokemon_growth[0]->species)));
+	pokeHeldEdit->setCurrentIndex(pokeHeldEdit->findData(QVariant(pg->held)));
+	pokeExperienceEdit->setText(QString::number(pg->xp));
+	pokeLevelEdit->setText(QString::number(pokemon->level));
+	pokeSpeciesEdit->setCurrentIndex(pokeSpeciesEdit->findData(QVariant(pg->species)));
 
-	pokeAtk1->setCurrentIndex(parser->pokemon_attacks[0]->atk1);
-	pokePP1->setValue(parser->pokemon_attacks[0]->pp1);
-	pokeAtk2->setCurrentIndex(parser->pokemon_attacks[0]->atk2);
-	pokePP2->setValue(parser->pokemon_attacks[0]->pp2);
-	pokeAtk3->setCurrentIndex(parser->pokemon_attacks[0]->atk3);
-	pokePP3->setValue(parser->pokemon_attacks[0]->pp3);
-	pokeAtk4->setCurrentIndex(parser->pokemon_attacks[0]->atk4);
-	pokePP4->setValue(parser->pokemon_attacks[0]->pp4);
+	pokeAtk1->setCurrentIndex(pa->atk1);
+	pokePP1->setValue(pa->pp1);
+	pokeAtk2->setCurrentIndex(pa->atk2);
+	pokePP2->setValue(pa->pp2);
+	pokeAtk3->setCurrentIndex(pa->atk3);
+	pokePP3->setValue(pa->pp3);
+	pokeAtk4->setCurrentIndex(pa->atk4);
+	pokePP4->setValue(pa->pp4);
 
-	pokeHPEV->setValue(parser->pokemon_effort[0]->hp);
-	pokeAtkEV->setValue(parser->pokemon_effort[0]->attack);
-	pokeDefEV->setValue(parser->pokemon_effort[0]->defense);
-	pokeSpdEV->setValue(parser->pokemon_effort[0]->speed);
-	pokeSpAtkEV->setValue(parser->pokemon_effort[0]->spatk);
-	pokeSpDefEV->setValue(parser->pokemon_effort[0]->spdef);
+	pokeHPEV->setValue(pe->hp);
+	pokeAtkEV->setValue(pe->attack);
+	pokeDefEV->setValue(pe->defense);
+	pokeSpdEV->setValue(pe->speed);
+	pokeSpAtkEV->setValue(pe->spatk);
+	pokeSpDefEV->setValue(pe->spdef);
 	// Total label will update itself since it is waiting on a signal from each spinbox
 	// TODO: Add a validator to the above spin boxes to force a user to keep them <= 510
 
-	pokeHPIV->setValue(parser->pokemon_misc[0]->hpiv);
-	pokeAtkIV->setValue(parser->pokemon_misc[0]->atkiv);
-	pokeDefIV->setValue(parser->pokemon_misc[0]->defiv);
-	pokeSpdIV->setValue(parser->pokemon_misc[0]->spdiv);
-	pokeSpAtkIV->setValue(parser->pokemon_misc[0]->spatkiv);
-	pokeSpDefIV->setValue(parser->pokemon_misc[0]->spdefiv);
+	pokeHPIV->setValue(pm->IVs.hp);
+	pokeAtkIV->setValue(pm->IVs.atk);
+	pokeDefIV->setValue(pm->IVs.def);
+	pokeSpdIV->setValue(pm->IVs.spd);
+	pokeSpAtkIV->setValue(pm->IVs.spatk);
+	pokeSpDefIV->setValue(pm->IVs.spdef);
 	// Total label will update itself since it is waiting on a signal from each spinbox
 }
 
@@ -135,17 +152,17 @@ void Window::save()
 	// TODO: Assert total EVs are within limit
 /*
 	Q_ASSERT(parser->pokemon_misc[i]->hpiv == pokeHPIV->value());
-	parser->pokemon_misc[i]->hpiv = pokeHPIV->value();
+	parser->pokemon_misc[i]->IVs.hp = pokeHPIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->atkiv == pokeAtkIV->value());
-	parser->pokemon_misc[i]->atkiv = pokeAtkIV->value();
+	parser->pokemon_misc[i]->IVs.atk = pokeAtkIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->defiv == pokeDefIV->value());
-	parser->pokemon_misc[i]->defiv = pokeDefIV->value();
+	parser->pokemon_misc[i]->IVs.def = pokeDefIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->spdiv == pokeSpdIV->value());
-	parser->pokemon_misc[i]->spdiv = pokeSpdIV->value();
+	parser->pokemon_misc[i]->IVs.spd = pokeSpdIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->spatkiv == pokeSpAtkIV->value());
-	parser->pokemon_misc[i]->spatkiv = pokeSpAtkIV->value();
+	parser->pokemon_misc[i]->IVs.spatk = pokeSpAtkIV->value();
 	Q_ASSERT(parser->pokemon_misc[i]->spdefiv == pokeSpDefIV->value());
-	parser->pokemon_misc[i]->spdefiv = pokeSpDefIV->value();
+	parser->pokemon_misc[i]->IVs.spdef = pokeSpDefIV->value();
 parser->pokemon_misc[i]->egg = 0;
 parser->pokemon_misc[i]->ability = 0;*/
 	// Save ramfile back to disk
@@ -169,7 +186,9 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 
 	// Basic layout manager
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-	QFormLayout* headerLayout = new QFormLayout();
+	QHBoxLayout* headerLayout = new QHBoxLayout();
+	QFormLayout* headerLeftLayout = new QFormLayout();
+	QFormLayout* headerRightLayout = new QFormLayout();
 	QHBoxLayout* topLayout = new QHBoxLayout();
 	QFormLayout* topLeftLayout = new QFormLayout();
 	QFormLayout* topCentreLayout = new QFormLayout();
@@ -187,9 +206,14 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	help->addAction( "About", this, SLOT(About()), Qt::Key_F1 );
 
 	// Select which game this file is from
-	// TODO: Detect this automatically
 	gameEdit = new GameComboBox();
-	headerLayout->addRow(tr("Game:"), gameEdit);
+	headerLeftLayout->addRow(tr("Game:"), gameEdit);
+
+	// Add a mechanism to switch between current pokemon
+	switchPokemonSpinBox = new QSpinBox();
+	switchPokemonSpinBox->setRange(0, 5);
+	QObject::connect(switchPokemonSpinBox, SIGNAL(valueChanged(int)), this, SLOT(switchPokemon()));
+	headerRightLayout->addRow(tr("&Pokemon:"), switchPokemonSpinBox);
 
 	// Basic pokemon data
 	// Left
@@ -336,7 +360,10 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	mainLayout->addLayout(headerLayout);
 	mainLayout->addLayout(topLayout);
 	mainLayout->addLayout(bottomLayout);
-	
+
+	headerLayout->addLayout(headerLeftLayout);
+	headerLayout->addLayout(headerRightLayout);
+
 	topLayout->addLayout(topLeftLayout);
 	topLayout->addLayout(topCentreLayout);
 	topLayout->addLayout(topRightLayout);

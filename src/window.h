@@ -39,6 +39,7 @@ class Window : public QWidget
 	public slots:
 		// Define any slots
 		void loadSave();
+		void switchPokemon();
 		void save();
 		void saveAs();
 		void quit();
@@ -48,10 +49,11 @@ class Window : public QWidget
 	private:
 		// Declare all widgets that will need to be accessed outside of the
 		// constructor (for example, if you need to get the value of a slider)
+		void loadPokemon(belt_pokemon_t*, pokemon_attacks_t*, pokemon_effort_t*, pokemon_misc_t*, pokemon_growth_t*);
 
 		QString openFileName;
 		SaveParser *parser;
-
+		int currentPokemon;
 
 		QLineEdit *pokePersonalityEdit;
 		QLineEdit *pokeNameEdit;
@@ -77,6 +79,7 @@ class Window : public QWidget
 		QSpinBox *pokePP3;
 		AttackComboBox *pokeAtk4;
 		QSpinBox *pokePP4;
+		QSpinBox *switchPokemonSpinBox;
 
 		QSpinBox *pokeHPEV;
 		QSpinBox *pokeAtkEV;
