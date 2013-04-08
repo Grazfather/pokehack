@@ -8,7 +8,7 @@ void Window::loadSave()
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open savestate"),
 						"./../..", tr("Savestates (*.*)") );
 
-	err = parser->load(fileName.toLocal8Bit().data());
+	err = parser->load(fileName.toLocal8Bit().data(), gameEdit->currentIndex());
 	if (err)
 	{
 		return;
@@ -92,9 +92,9 @@ void Window::updateTotalIVs()
 
 void Window::save()
 {
-	int i = 0; // For now we're only viewing/saving first pokemon
-
-	// Save values back to ramfile
+	// Since GUI only keeps track of one pokemon, we can
+	// only save the visible pokemon
+	int i = currentPokemon;
 
 	// Don't save personality or OTID for now
 	//Q_ASSERT(parser->pokemon[i]->personality == pokePersonalityEdit->text().toInt(NULL, 16));
@@ -104,69 +104,43 @@ void Window::save()
 	//Q_ASSERT(parser->pokemon[i]->otid == pokeTrainerIDEdit->text().toInt(NULL, 16));
 	//parser->pokemon[i]->otid = pokeTrainerIDEdit->text().toInt(NULL, 16);
 
-	Q_ASSERT(parser->pokemon[i]->status == pokeStatusEdit->currentIndex());
 	parser->pokemon[i]->status = pokeStatusEdit->currentIndex();
-	// QComboBox *pokeMarkEdit;
-	Q_ASSERT(parser->pokemon_misc[i]->pokeball == pokePokeballEdit->currentIndex());
 	parser->pokemon_misc[i]->pokeball = pokePokeballEdit->currentIndex();
-	// QComboBox *pokeLocationEdit;
 
-	Q_ASSERT(parser->pokemon_growth[i]->held == pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt());
 	parser->pokemon_growth[i]->held = pokeHeldEdit->itemData(pokeHeldEdit->currentIndex()).toInt();
-	Q_ASSERT(parser->pokemon_growth[i]->xp == pokeExperienceEdit->text().toInt());
 	parser->pokemon_growth[i]->xp = pokeExperienceEdit->text().toInt();
-	Q_ASSERT(parser->pokemon[i]->level == pokeLevelEdit->text().toInt());
-	parser->pokemon[i]->level = pokeLevelEdit->text().toInt();
-	//Q_ASSERT(parser->pokemon_growth[i]->species == pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt());
 	parser->pokemon_growth[i]->species = pokeSpeciesEdit->itemData(pokeSpeciesEdit->currentIndex()).toInt();
 
-	//Q_ASSERT(parser->pokemon_attacks[i]->atk1 == pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk1 = pokeAtk1->itemData(pokeAtk1->currentIndex()).toInt();
-	Q_ASSERT(parser->pokemon_attacks[i]->pp1 == pokePP1->value());
 	parser->pokemon_attacks[i]->pp1 = pokePP1->value();
-	//Q_ASSERT(parser->pokemon_attacks[i]->atk2 == pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk2 = pokeAtk2->itemData(pokeAtk2->currentIndex()).toInt();
-	Q_ASSERT(parser->pokemon_attacks[i]->pp2 == pokePP2->value());
 	parser->pokemon_attacks[i]->pp2 = pokePP2->value();
-	//Q_ASSERT(parser->pokemon_attacks[i]->atk3 == pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk3 = pokeAtk3->itemData(pokeAtk3->currentIndex()).toInt();
-	Q_ASSERT(parser->pokemon_attacks[i]->pp3 == pokePP3->value());
 	parser->pokemon_attacks[i]->pp3 = pokePP3->value();
-	//Q_ASSERT(parser->pokemon_attacks[i]->atk4 == pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt());
 	parser->pokemon_attacks[i]->atk4 = pokeAtk4->itemData(pokeAtk4->currentIndex()).toInt();
-	Q_ASSERT(parser->pokemon_attacks[i]->pp4 == pokePP4->value());
 	parser->pokemon_attacks[i]->pp4 = pokePP4->value();
 
-	Q_ASSERT(parser->pokemon_effort[i]->hp == pokeHPEV->value());
-	parser->pokemon_effort[i]->hp = pokeHPEV->value();
-	Q_ASSERT(parser->pokemon_effort[i]->attack == pokeAtkEV->value());
-	parser->pokemon_effort[i]->attack = pokeAtkEV->value();
-	Q_ASSERT(parser->pokemon_effort[i]->defense == pokeDefEV->value());
-	parser->pokemon_effort[i]->defense = pokeDefEV->value();
-	Q_ASSERT(parser->pokemon_effort[i]->speed == pokeSpdEV->value());
-	parser->pokemon_effort[i]->speed = pokeSpdEV->value();
-	Q_ASSERT(parser->pokemon_effort[i]->spatk == pokeSpAtkEV->value());
-	parser->pokemon_effort[i]->spatk = pokeSpAtkEV->value();
-	Q_ASSERT(parser->pokemon_effort[i]->spdef == pokeSpDefEV->value());
-	parser->pokemon_effort[i]->spdef = pokeSpDefEV->value();
 	// TODO: Assert total EVs are within limit
-/*
-	Q_ASSERT(parser->pokemon_misc[i]->hpiv == pokeHPIV->value());
+	parser->pokemon_effort[i]->hp = pokeHPEV->value();
+	parser->pokemon_effort[i]->attack = pokeAtkEV->value();
+	parser->pokemon_effort[i]->defense = pokeDefEV->value();
+	parser->pokemon_effort[i]->speed = pokeSpdEV->value();
+	parser->pokemon_effort[i]->spatk = pokeSpAtkEV->value();
+	parser->pokemon_effort[i]->spdef = pokeSpDefEV->value();
+
 	parser->pokemon_misc[i]->IVs.hp = pokeHPIV->value();
-	Q_ASSERT(parser->pokemon_misc[i]->atkiv == pokeAtkIV->value());
 	parser->pokemon_misc[i]->IVs.atk = pokeAtkIV->value();
-	Q_ASSERT(parser->pokemon_misc[i]->defiv == pokeDefIV->value());
 	parser->pokemon_misc[i]->IVs.def = pokeDefIV->value();
-	Q_ASSERT(parser->pokemon_misc[i]->spdiv == pokeSpdIV->value());
 	parser->pokemon_misc[i]->IVs.spd = pokeSpdIV->value();
-	Q_ASSERT(parser->pokemon_misc[i]->spatkiv == pokeSpAtkIV->value());
 	parser->pokemon_misc[i]->IVs.spatk = pokeSpAtkIV->value();
-	Q_ASSERT(parser->pokemon_misc[i]->spdefiv == pokeSpDefIV->value());
 	parser->pokemon_misc[i]->IVs.spdef = pokeSpDefIV->value();
-parser->pokemon_misc[i]->egg = 0;
-parser->pokemon_misc[i]->ability = 0;*/
-	// Save ramfile back to disk
+
+	// Save pokemon to .sav file
 	parser->save(openFileName.toLocal8Bit().data());
+	// And re-loader it so that we can continue to work on it.
+	parser->load(openFileName.toLocal8Bit().data(), gameEdit->currentIndex());
+	// Re-load the pokemon into the GUI
+	switchPokemon();
 }
 
 void Window::saveAs()
