@@ -178,7 +178,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	
 	// Create menus
 	QMenu* file = new QMenu("&File");
-	file->addAction( "Load savestate",  this, SLOT(loadSave()), Qt::CTRL+Qt::Key_L );
+	file->addAction( "Load savefile",  this, SLOT(loadSave()), Qt::CTRL+Qt::Key_L );
 	file->addAction( "Save",  this, SLOT(save()), Qt::CTRL+Qt::Key_S );
 	file->addAction( "Save As...",  this, SLOT(saveAs()), Qt::CTRL+Qt::ALT+Qt::Key_S );
 	file->addAction( "Exit",  this, SLOT(quit()), Qt::CTRL+Qt::Key_Q );
@@ -195,7 +195,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	// Left
 	pokeSpeciesEdit = new SpeciesComboBox();
 	pokeLevelEdit = new QLineEdit();
-	pokeLevelEdit->setValidator(new QIntValidator(this));
+	pokeLevelEdit->setEnabled(0);
 	pokeHeldEdit = new ItemComboBox();
 	pokeExperienceEdit = new QLineEdit();
 	pokeExperienceEdit->setValidator(new QIntValidator(this));
@@ -208,23 +208,28 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	// Centre
 	pokeNameEdit = new QLineEdit();
 	pokeNameEdit->setMaxLength(10);
+	pokeNameEdit->setEnabled(0);
 	pokeTrainerIDEdit = new QLineEdit();
 	pokeTrainerIDEdit->setValidator(new QIntValidator(this));
 	pokeTrainerNameEdit = new QLineEdit();
 	pokeTrainerNameEdit->setMaxLength(7);
+	pokeTrainerNameEdit->setEnabled(0);
 	pokePersonalityEdit = new QLineEdit();
+	pokePersonalityEdit->setEnabled(0);
 	pokePersonalityEdit->setValidator(new QIntValidator(this));
-	
+
 	topCentreLayout->addRow(tr("&Nick Name:"), pokeNameEdit);
 	topCentreLayout->addRow(tr("Trainer &ID:"), pokeTrainerIDEdit);
 	topCentreLayout->addRow(tr("&Trainer Name:"), pokeTrainerNameEdit);
 	topCentreLayout->addRow(tr("&Personality:"), pokePersonalityEdit);
-	
+
 	// Right
 	pokeStatusEdit = new StatusComboBox();
 	pokeMarkEdit = new QComboBox();
+	pokeMarkEdit->setEnabled(0);
 	pokePokeballEdit = new PokeballComboBox();
 	pokeLocationEdit = new QComboBox();
+	pokeLocationEdit->setEnabled(0);
 
 	topRightLayout->addRow(tr("S&tatus:"), pokeStatusEdit);
 	topRightLayout->addRow(tr("&Mark:"), pokeMarkEdit);
@@ -245,15 +250,15 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeAtk4 = new AttackComboBox();
 	pokePP4 = new QSpinBox();
 	pokePP4->setRange(0, 64);
-	
+
 	pokeAttackLayout->addRow(new QLabel(tr("Attacks:")));
 	pokeAttackLayout->addRow(pokeAtk1, pokePP1);
 	pokeAttackLayout->addRow(pokeAtk2, pokePP2);
 	pokeAttackLayout->addRow(pokeAtk3, pokePP3);
 	pokeAttackLayout->addRow(pokeAtk4, pokePP4);
-	
+
 	bottomLayout->addLayout(pokeAttackLayout);
-	
+
 	// Pokemon EVs
 	pokeTotalEVs = new QLabel(tr("Total EVs: "));
 	pokeHPEV = new QSpinBox();
@@ -275,7 +280,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeSpDefEV->setRange(0, 255);
 	QObject::connect(pokeSpDefEV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalEVs()));
 	QFormLayout *pokeEVsLayout = new QFormLayout();
-	
+
 	pokeEVsLayout->addRow(new QLabel(tr("EVs:")));
 	pokeEVsLayout->addRow(tr("HP:"), pokeHPEV);
 	pokeEVsLayout->addRow(tr("Atk:"), pokeAtkEV);
@@ -284,9 +289,9 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeEVsLayout->addRow(tr("SpAtk:"), pokeSpAtkEV);
 	pokeEVsLayout->addRow(tr("SpDef:"), pokeSpDefEV);
 	pokeEVsLayout->addRow(pokeTotalEVs);
-	
+
 	bottomLayout->addLayout(pokeEVsLayout);
-	
+
 	// Pokemon IVs
 	QFormLayout* pokeIVsLayout = new QFormLayout();
 	pokeHPIV = new QSpinBox();
@@ -308,7 +313,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeSpDefIV->setRange(0, 31);
 	QObject::connect(pokeSpDefIV, SIGNAL(valueChanged(int)), this, SLOT(updateTotalIVs()));
 	pokeTotalIVs = new QLabel(tr("Total IVs: "));
-	
+
 	pokeIVsLayout->addRow(new QLabel(tr("IVs:")));
 	pokeIVsLayout->addRow(tr("HP:"), pokeHPIV);
 	pokeIVsLayout->addRow(tr("Atk:"), pokeAtkIV);
@@ -317,17 +322,17 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	pokeIVsLayout->addRow(tr("SpAtk:"), pokeSpAtkIV);
 	pokeIVsLayout->addRow(tr("SpDef:"), pokeSpDefIV);
 	pokeIVsLayout->addRow(pokeTotalIVs);
-	
+
 	bottomLayout->addLayout(pokeIVsLayout);
-	
+
 	// Pokemon Growth
 	QGridLayout* pokeGrowthLayout = new QGridLayout();
-	
+
 	bottomLayout->addLayout(pokeGrowthLayout);
-	
+
 	// Pokemon Misc
 	QGridLayout* pokeMiscLayout = new QGridLayout();
-	
+
 	mainLayout->addLayout(headerLayout);
 	mainLayout->addLayout(topLayout);
 	mainLayout->addLayout(bottomLayout);
@@ -337,7 +342,7 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	topLayout->addLayout(topRightLayout);
 	
 	bottomLayout->addLayout(pokeMiscLayout);
-	
+
 	// Create a menu bar
 	QMenuBar* menu = new QMenuBar( this );
 	menu->addSeparator();
@@ -345,6 +350,6 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	menu->addMenu( help );
 
 	mainLayout->setMenuBar( menu );
-	
+
 	setLayout(mainLayout);
 }
