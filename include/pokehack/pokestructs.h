@@ -24,6 +24,8 @@
 #define NUM_ITEMS 377
 #define NUM_ATTACKS 355
 
+#include <pokehack/config.h>
+
 typedef struct {
 	unsigned char blocknum;
 	unsigned char padding;
@@ -172,9 +174,30 @@ static const int DataOrderTable[24][4] = { \
 
 static const int belt_offsets[] = { BELT_OFFSET_RSE, BELT_OFFSET_FRLG };
 
-unsigned short int encrypt( unsigned char *, unsigned int, unsigned int );
-char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
-int pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE_LEN]);
-int parse_pokemon(char*, int, void** pokemon, pokemon_attacks_t**, pokemon_effort_t**, pokemon_growth_t**, pokemon_misc_t**, int, int);
-void print_pokemon(box_pokemon_t* pokemon);
+int POKEHACK_API pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE_LEN]);
+
+//Allow global variables to be used outside library in MSVC
+#ifdef _MSC_VER
+    #ifdef __cplusplus
+        extern "C"
+        {
+            POKEHACK_API char* pokemon_species[];
+            POKEHACK_API char* items[];
+            POKEHACK_API char* natures[];
+            POKEHACK_API char* attacks[];
+            POKEHACK_API char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
+        }
+    #else
+        POKEHACK_API extern char* pokemon_species[];
+        POKEHACK_API extern char* items[];
+        POKEHACK_API extern char* natures[];
+        POKEHACK_API extern char* attacks[];
+        POKEHACK_API char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
+    #endif
+    #else
+        POKEHACK_API extern char* pokemon_species[];
+        POKEHACK_API extern char* items[];
+        POKEHACK_API extern char* natures[];
+        POKEHACK_API extern char* attacks[];
+        #endif
 #endif

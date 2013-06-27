@@ -1,4 +1,6 @@
-char* attacks[] = {
+#include <pokehack/config.h>
+
+POKEHACK_API char* attacks[] = {
 	"No attack",
 	"Pound",
 	"Karate Chop",

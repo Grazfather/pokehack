@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <pokestructs.h>
+#include <pokehack/pokestructs.h>
 
 static unsigned short int get_block_checksum(block* b)
 {

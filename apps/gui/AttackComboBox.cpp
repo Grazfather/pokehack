@@ -1,7 +1,5 @@
 #include "AttackComboBox.h"
-#include "../include/pokestructs.h"
-
-extern char* attacks[];
+#include <pokehack/pokestructs.h>
 
 AttackComboBox::AttackComboBox( QWidget* parent ) : QComboBox( parent )
 {
