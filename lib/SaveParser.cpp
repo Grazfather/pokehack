@@ -166,10 +166,6 @@ int SaveParser::parse_pokemon(char* buf, int offset, void** pokemon, pokemon_att
 		pe[i] = (pokemon_effort_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][1] * sizeof(pokemon_effort_t));
 		pg[i] = (pokemon_growth_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
 		pm[i] = (pokemon_misc_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][3] * sizeof(pokemon_misc_t));
-		/*if (pg[i]->species) {
-			fprintf(stdout, "\nPokemon %d\n", i);
-			print_pokemon((box_pokemon_t*)pokemon[i]);
-		}*/
 	}
 
 	return 0;
