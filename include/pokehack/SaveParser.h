@@ -1,6 +1,6 @@
-#include "../include/pokestructs.h"
+#include <pokehack/pokestructs.h>
 
-class SaveParser
+class POKEHACK_API SaveParser
 {
 public:
 	static SaveParser* Instance();

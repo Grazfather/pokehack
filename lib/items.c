@@ -1,4 +1,6 @@
-char* items[] = {
+#include <pokehack/config.h>
+
+POKEHACK_API char* items[] = {
 	"Nothing",
 	"Master Ball",
 	"Ultra Ball",

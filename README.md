@@ -1,25 +1,67 @@
 #pokehack
 ##Pokemon Generation 3 .sav file editor
-GUI currently supports viewing first pokemon in party.
-The console application supports editing any data from any pokemon, but requires editing pkc3.c and recompiling.
 
 ## How to Use
 ### GUI
 
 1. Compile:
 
-    ```
-cd src
-qmake
-make release
+Download CMake (http://www.http://cmake.org/cmake/resources/software.html)
+
+Pokehack is compatible with GCC and MSVC. The steps in common before compiling are as follows:
+
+a. Make a build directory in which to compile the files.
+
+b. From the build directory, run:
+
+```
+cmake <source directory>
 ```
 
-1. Run: Open pokehack.exe in the release subdirectory. File > Open to select a save state.
+Alternatively, run the CMake GUI and do this process there.
 
-**NOTES:**
-* Can only view belt pokemon
-* Will only save the currently viewed pokemon. Be sure to save every pokemon you edit before switching to another.
-* 'Save As...' does nothing. Only saving over the opened file works. For that reason BACK UP YOUR .sav!!!
+GCC
+
+```
+cd <build directory>
+make
+```
+
+MSVC (command line)
+
+```
+cd <build directory>
+devenv pokehack.sln /build Release /project ALL_BUILD
+```
+
+MSVC (GUI)
+
+a. Open pokehack.sln in MSVC.
+
+b. In the top toolbars, make sure the build is set to Release.
+
+c. From the top menu, select Build -> Build Solution.
+
+NOTE: If you want to install Pokehack somewhere instead of simply building it, use this CMake
+command instead:
+
+```
+cmake -DCMAKE_INSTALL_PREFIX=<install directory> <source directory>
+```
+
+In GCC:
+
+```
+cd <build directory>
+make install
+```
+
+In MSVC (command line):
+
+```
+cd <build directory>
+devenv pokehack.sln /build release /project ALL_BUILD
+```
 
 ### Command line
 1. Edit main() in pkc3.c and change whatever attributes of the six pokemon_t.  See include/pokestructs.h to see their structure.
@@ -36,7 +78,7 @@ make
  * Game = 1 for FireRed or LeafGreen
 
     ```
-pokehack.exe <path/to/savefile> [outfile] <game>
+pokehack_cmd <path/to/savefile> [outfile] <game>
 ```
 
 ## Feature Wish List

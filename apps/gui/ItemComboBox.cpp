@@ -1,7 +1,5 @@
 #include "ItemComboBox.h"
-#include "../include/pokestructs.h"
-
-extern char* items[];
+#include <pokehack/pokestructs.h>
 
 ItemComboBox::ItemComboBox( QWidget* parent ) : QComboBox( parent )
 {

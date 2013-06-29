@@ -22,7 +22,7 @@
 #include "SpeciesComboBox.h"
 #include "PokeballComboBox.h"
 #include "StatusComboBox.h"
-#include "SaveParser.h"
+#include <pokehack/SaveParser.h>
 
 #include <QDebug>
 

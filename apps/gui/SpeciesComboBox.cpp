@@ -1,7 +1,5 @@
 #include "SpeciesComboBox.h"
-#include "../include/pokestructs.h"
-
-extern char* pokemon_species[];
+#include <pokehack/pokestructs.h>
 
 SpeciesComboBox::SpeciesComboBox( QWidget* parent ) : QComboBox( parent )
 {

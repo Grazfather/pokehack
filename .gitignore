@@ -1,5 +1,2 @@
-*.o
-*.exe
-*.sav
-src/debug/*
-src/release/*
+*~
+*swp

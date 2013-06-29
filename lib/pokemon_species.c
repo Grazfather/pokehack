@@ -1,4 +1,6 @@
-char *pokemon_species[] = {
+#include <pokehack/config.h>
+
+POKEHACK_API char *pokemon_species[] = {
 	"No pokemon",
 	"Bulbasaur",
 	"Ivysaur",

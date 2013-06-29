@@ -1,4 +1,6 @@
-char* natures[] = {
+#include <pokehack/config.h>
+
+POKEHACK_API char* natures[] = {
 	"Hardy (=)",
 	"Lonely (+Atk,-Def)",
 	"Brave (+Atk,-Spe)",
