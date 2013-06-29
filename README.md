@@ -18,7 +18,7 @@ b. From the build directory, run:
 cmake <source directory>
 ```
 
-Alternatively, run the CMake GUIand do this process there.
+Alternatively, run the CMake GUI and do this process there.
 
 GCC
 
