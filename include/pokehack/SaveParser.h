@@ -8,6 +8,7 @@ public:
 	char* parse_save(const char*, char*, block*[NUM_BLOCKS_TOTAL]);
 	unsigned short int get_block_checksum(block* b);
 	int pack_save(const char *, char *, block *[NUM_BLOCKS_TOTAL], char[SAVEFILE_LEN]);
+	char* get_text(unsigned char* raw, bool is_nickname);
 	void print_pokemon(box_pokemon_t*);
 	int parse_pokemon(char*, int, void**, pokemon_attacks_t**, pokemon_effort_t**, pokemon_growth_t**, pokemon_misc_t**, int, int);
 	unsigned short int encrypt(unsigned char*, unsigned int, unsigned int);
