@@ -33,10 +33,9 @@ void Window::switchPokemon()
 void Window::loadPokemon(belt_pokemon_t* pokemon, pokemon_attacks_t* pa, pokemon_effort_t* pe, pokemon_misc_t* pm, pokemon_growth_t* pg)
 {
 	pokePersonalityEdit->setText(QString::number(pokemon->personality, 16).toUpper());
-	// TODO: Convert the nickname to ASCII
-	// pokeNameEdit->setText(QString::
+	pokeNameEdit->setText(QString::fromLocal8Bit(parser->get_text(pokemon->name, true)));
 	pokeTrainerIDEdit->setText(QString::number(pokemon->otid, 16).toUpper());
-	// QLineEdit *pokeTrainerNameEdit;
+	pokeTrainerNameEdit->setText(QString::fromLocal8Bit(parser->get_text(pokemon->otname, false)));
 
 	pokeStatusEdit->setCurrentIndex(pokemon->status);
 	// QComboBox *pokeMarkEdit;
@@ -206,12 +205,12 @@ Window::Window( QWidget* parent ) : QWidget( parent )
 	// Centre
 	pokeNameEdit = new QLineEdit();
 	pokeNameEdit->setMaxLength(10);
-	pokeNameEdit->setEnabled(0);
+	pokeNameEdit->setEnabled(1);
 	pokeTrainerIDEdit = new QLineEdit();
 	pokeTrainerIDEdit->setValidator(new QIntValidator(this));
 	pokeTrainerNameEdit = new QLineEdit();
 	pokeTrainerNameEdit->setMaxLength(7);
-	pokeTrainerNameEdit->setEnabled(0);
+	pokeTrainerNameEdit->setEnabled(1);
 	pokePersonalityEdit = new QLineEdit();
 	pokePersonalityEdit->setEnabled(0);
 	pokePersonalityEdit->setValidator(new QIntValidator(this));

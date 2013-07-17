@@ -185,6 +185,7 @@ int POKEHACK_API pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE
             POKEHACK_API char* items[];
             POKEHACK_API char* natures[];
             POKEHACK_API char* attacks[];
+            POKEHACK_API char text[];
             POKEHACK_API char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
         }
     #else
@@ -192,6 +193,7 @@ int POKEHACK_API pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE
         POKEHACK_API extern char* items[];
         POKEHACK_API extern char* natures[];
         POKEHACK_API extern char* attacks[];
+        POKEHACK_API extern char text[];
         POKEHACK_API char* parse_save( char*, char*, block*[NUM_BLOCKS_TOTAL]);
     #endif
     #else
@@ -199,5 +201,6 @@ int POKEHACK_API pack_save(char*, char*, block*[NUM_BLOCKS_TOTAL], char[SAVEFILE
         POKEHACK_API extern char* items[];
         POKEHACK_API extern char* natures[];
         POKEHACK_API extern char* attacks[];
+        POKEHACK_API extern char text[];
         #endif
 #endif

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <pokehack/data.h>
 
@@ -7,6 +8,7 @@ extern char* pokemon_species[];
 extern char* items[];
 extern char* natures[];
 extern char* attacks[];
+extern char text[];
 
 /*
  *	Encrypts/decrypts the 48 byte data buffer based on the xored pv and otid values
@@ -30,6 +32,24 @@ unsigned short int encrypt(unsigned char *data, unsigned int pv, unsigned int ot
 	return checksum;
 }
 
+char* get_text(unsigned char* raw, int max_len)
+{
+	//Determine name length
+	int i;
+	char* actual_text;
+	actual_text = malloc(max_len);
+	for(i = 0; i < max_len; i++)
+	{
+		if((int)(raw[i]) != 255) //255 is the terminator
+		{
+			actual_text[i] = text[(int)(raw[i])];
+		}
+		else actual_text[i] = '\0';
+	}
+
+	return actual_text;
+}
+
 int parse_pokemon(char* buf, int offset, void** pokemon, pokemon_attacks_t** pa, pokemon_effort_t** pe, pokemon_growth_t** pg, pokemon_misc_t** pm, int num, int size)
 {
 	int i;
@@ -42,6 +62,8 @@ int parse_pokemon(char* buf, int offset, void** pokemon, pokemon_attacks_t** pa,
 	for(i = 0; i < num; i++)
 	{
 		int o;
+		char* nickname;
+		char* otname;
 
 		// Read data on pokemon
 		pokemon[i] = (buf + offset + (i * size));
@@ -58,8 +80,13 @@ int parse_pokemon(char* buf, int offset, void** pokemon, pokemon_attacks_t** pa,
 		pg[i] = (pokemon_growth_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][2] * sizeof(pokemon_growth_t));
 		pm[i] = (pokemon_misc_t *)(((box_pokemon_t*)pokemon[i])->data + DataOrderTable[o][3] * sizeof(pokemon_misc_t));
 		if (pg[i]->species) {
-			fprintf(stdout, "\nPokemon %d\n", i);
+			nickname = get_text(((box_pokemon_t*)pokemon[i])->name, 10);
+			otname = get_text(((box_pokemon_t*)pokemon[i])->otname, 7);
+			fprintf(stdout, "\nPokemon %d - %s\n", i, nickname);
+			fprintf(stdout, "Original trainer: %s\n", otname);
 			print_pokemon(pokemon[i]);
+			free(nickname);
+			free(otname);
 		}
 	}
 

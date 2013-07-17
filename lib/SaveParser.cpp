@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
 #include <pokehack/SaveParser.h>
+
+#define MAX_TRAINER_NAME_LEN 7
+#define MAX_NICKNAME_LEN 10
 
 // Global variables
 extern char* pokemon_species[];
 extern char* items[];
 extern char* natures[];
 extern char* attacks[];
+extern char text[];
 
 SaveParser* SaveParser::spInstance = NULL;
 
@@ -116,6 +121,31 @@ int SaveParser::pack_save(const char *filename, char *unpackeddata, block *block
 	return 0;
 }
 
+char* SaveParser::get_text(unsigned char* raw, bool is_nickname)
+{
+	char* actual_text;
+	int len;
+
+	if(is_nickname)
+	{
+		actual_text = new char[MAX_NICKNAME_LEN];
+		len = MAX_NICKNAME_LEN;
+	}
+	else
+	{
+		actual_text = new char[MAX_TRAINER_NAME_LEN];
+		len = MAX_TRAINER_NAME_LEN;
+	}
+
+	for(int i = 0; i < len; i++)
+	{
+		if(int(raw[i]) != 255) actual_text[i] = text[int(raw[i])];
+		else actual_text[i] = '\0';
+	}
+
+	return actual_text;
+}
+
 void SaveParser::print_pokemon(box_pokemon_t* pokemon)
 {
 	pokemon_attacks_t *pa;
@@ -123,6 +153,7 @@ void SaveParser::print_pokemon(box_pokemon_t* pokemon)
 	pokemon_growth_t *pg;
 	pokemon_misc_t *pm;
 	int o, totalIVs, totalEVs;
+	char* nickname = get_text(pokemon->name, true);
 
 	// Figure out the order
 	o = pokemon->personality % 24;
@@ -133,10 +164,12 @@ void SaveParser::print_pokemon(box_pokemon_t* pokemon)
 
 	totalIVs = pm->IVs.hp + pm->IVs.atk + pm->IVs.def + pm->IVs.spatk + pm->IVs.spdef + pm->IVs.spd;
 	totalEVs = pe->hp + pe->attack + pe->defense + pe->spatk + pe->spdef + pe->speed;
-	fprintf(stdout, "Species: %s, held: %s, Nature: %s\n", pokemon_species[pg->species], items[pg->held], natures[pokemon->personality % 25]);
+	fprintf(stdout, "Species: %s, Nickname: %s, held: %s, Nature: %s\n", pokemon_species[pg->species], nickname, items[pg->held], natures[pokemon->personality % 25]);
 	fprintf(stdout, "Attacks: 1:%s, 2:%s, 3:%s, 4:%s\n", attacks[pa->atk1], attacks[pa->atk2], attacks[pa->atk3], attacks[pa->atk4] );
 	fprintf(stdout, "IVs:\tHP:%d\tAtk:%d\tDef:%d\tSpA:%d\tSpD:%d\tSpe:%d\tTotal:%d\n", pm->IVs.hp, pm->IVs.atk, pm->IVs.def, pm->IVs.spatk, pm->IVs.spdef, pm->IVs.spd, totalIVs );
 	fprintf(stdout, "EVs:\tHP:%d\tAtk:%d\tDef:%d\tSpA:%d\tSpD:%d\tSpe:%d\tTotal:%d\n", pe->hp, pe->attack, pe->defense, pe->spatk, pe->spdef, pe->speed, totalEVs );
+
+	delete[] nickname;
 }
 
 int SaveParser::parse_pokemon(char* buf, int offset, void** pokemon, pokemon_attacks_t** pa, pokemon_effort_t** pe, pokemon_growth_t** pg, pokemon_misc_t** pm, int num, int size)
