@@ -43,7 +43,7 @@ typedef struct {
 unsigned short get_checksum( block* );
 
 typedef struct {
-	const unsigned int personality;
+	unsigned int personality;
 	unsigned int otid;
 	unsigned char name[10];
 	unsigned short language;

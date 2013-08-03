@@ -1,3 +1,5 @@
+#ifndef POKEHACK_SAVEPARSER_H
+#define POKEHACK_SAVEPARSER_H
 #include <pokehack/pokestructs.h>
 
 class POKEHACK_API SaveParser
@@ -27,3 +29,4 @@ private:
 	block *blocks[NUM_BLOCKS_TOTAL];
 	static SaveParser* spInstance;
 };
+#endif /* POKEHACK_SAVEPARSER_H */
