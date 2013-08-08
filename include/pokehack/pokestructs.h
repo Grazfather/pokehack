@@ -48,7 +48,16 @@ typedef struct {
 	unsigned char name[10];
 	unsigned short language;
 	unsigned char otname[7];
-	unsigned char mark;
+	union {
+		struct {
+			unsigned char circle:1;
+			unsigned char triangle:1;
+			unsigned char square:1;
+			unsigned char heart:1;
+			unsigned int xbit:4; // unused
+		} mark;
+		unsigned char markint;
+	};
 	unsigned short int checksum;
 	unsigned short int x1;				// unused
 	unsigned char data[POKEMON_DATA_LENGTH];
@@ -133,7 +142,43 @@ typedef struct {
 		} IVs;
 		unsigned int IVint;
 	};
-	unsigned int ribbons;
+	union {
+		struct {
+			unsigned char coolnormal:1;
+			unsigned char coolsuper:1;
+			unsigned char coolhyper:1;
+			unsigned char coolmaster:1;
+			unsigned char beautynormal:1;
+			unsigned char beautysuper:1;
+			unsigned char beautyhyper:1;
+			unsigned char beautymaster:1;
+			unsigned char cutenormal:1;
+			unsigned char cutesuper:1;
+			unsigned char cutehyper:1;
+			unsigned char cutemaster:1;
+			unsigned char smartnormal:1;
+			unsigned char smartsuper:1;
+			unsigned char smarthyper:1;
+			unsigned char smartmaster:1;
+			unsigned char toughnormal:1;
+			unsigned char toughsuper:1;
+			unsigned char toughhyper:1;
+			unsigned char toughmaster:1;
+			unsigned char champion:1;
+			unsigned char winning:1;
+			unsigned char victory:1;
+			unsigned char artist:1;
+			unsigned char effort:1;
+			unsigned char marine:1;
+			unsigned char land:1;
+			unsigned char sky:1;
+			unsigned char country:1;
+			unsigned char national:1;
+			unsigned char earth:1;
+			unsigned char world:1;
+		} ribbons;
+		unsigned int ribbonint;
+	};
 } pokemon_misc_t;
 
 /* Order:
