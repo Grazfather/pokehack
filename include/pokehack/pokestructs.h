@@ -54,7 +54,7 @@ typedef struct {
 			unsigned char triangle:1;
 			unsigned char square:1;
 			unsigned char heart:1;
-			unsigned int xbit:4; // unused
+			unsigned char xbit:4; // unused
 		} mark;
 		unsigned char markint;
 	};
