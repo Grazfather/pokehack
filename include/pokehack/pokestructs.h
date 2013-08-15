@@ -125,8 +125,7 @@ typedef struct {
 	unsigned char pokerus;
 	unsigned char locationcaught;
 	signed char levelcaught:7;
-	unsigned char gamelsb:1;				// 'Game of Origin' lsb
-	unsigned char gamemsbs:3;				// 'Game of Origin' msbs
+	unsigned char game:4;
 	unsigned char pokeball:4;
 	unsigned char tgender:1;
 	union {
