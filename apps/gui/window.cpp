@@ -155,7 +155,7 @@ void Window::quit()
 Window::Window( QWidget* parent ) : QWidget( parent )
 {
 	// Grab parser instance
-	parser = SaveParser::Instance();
+	parser = pokehack::SaveParser::Instance();
 
 	// Basic layout manager
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);

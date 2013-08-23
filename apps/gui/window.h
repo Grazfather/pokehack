@@ -52,7 +52,7 @@ class Window : public QWidget
 		void loadPokemon(belt_pokemon_t*, pokemon_attacks_t*, pokemon_effort_t*, pokemon_misc_t*, pokemon_growth_t*);
 
 		QString openFileName;
-		SaveParser *parser;
+		pokehack::SaveParser *parser;
 		int currentPokemon;
 
 		QLineEdit *pokePersonalityEdit;
